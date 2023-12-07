@@ -41,6 +41,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   int currentPageIndex = 0;
+  double weightValue = 0;
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
 
   void _incrementCounter() {
@@ -52,6 +53,38 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  Future<void> _displayAddWeightDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Add weight'),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  valueText = value;
+                });
+              },
+              controller: _textFieldController,
+              decoration: const InputDecoration(hintText: 'Weight'),
+            ),
+            actions: [
+              MaterialButton(
+                color: Colors.blue,
+                  child: const Text('Save'),
+                  onPressed: () {
+                    setState(() {
+                      codeDialog = valueText;
+                      Navigator.pop(context);
+                    });
+                  }
+              )
+            ],
+          );
+        }
+    );
   }
 
   @override
