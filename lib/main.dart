@@ -42,7 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   int currentPageIndex = 0;
   double weightValue = 0;
-  NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
+  NavigationDestinationLabelBehavior labelBehavior =
+      NavigationDestinationLabelBehavior.onlyShowSelected;
 
   void _incrementCounter() {
     setState(() {
@@ -55,36 +56,33 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  TextEditingController _weightTextFieldController = TextEditingController();
+
   Future<void> _displayAddWeightDialog(BuildContext context) async {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Add weight'),
+            title: const Text('Add weight'),
             content: TextField(
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
-              controller: _textFieldController,
+              controller: _weightTextFieldController,
               decoration: const InputDecoration(hintText: 'Weight'),
             ),
             actions: [
               MaterialButton(
-                color: Colors.blue,
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              MaterialButton(
                   child: const Text('Save'),
                   onPressed: () {
-                    setState(() {
-                      codeDialog = valueText;
-                      Navigator.pop(context);
-                    });
-                  }
-              )
+                    print(_weightTextFieldController.text);
+                    Navigator.pop(context);
+                  })
             ],
           );
-        }
-    );
+        });
   }
 
   @override
@@ -96,7 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-
       bottomNavigationBar: NavigationBar(
         labelBehavior: labelBehavior,
         selectedIndex: currentPageIndex,
@@ -125,28 +122,29 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body:
-         Card(
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                    const Text(
-                      'Last recorded weight is',
-                    ),
-                Text(
-                  '$_counter',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                )
-              ],
-            ),
+      body: Card(
+        margin: const EdgeInsets.all(8.0),
+        child: SizedBox.expand(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Last recorded weight is',
+              ),
+              Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.headlineMedium,
+              )
+            ],
           ),
         ),
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
         tooltip: 'Add',
         child: const Icon(Icons.add),
+        onPressed: () {
+          _displayAddWeightDialog(context);
+        },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
