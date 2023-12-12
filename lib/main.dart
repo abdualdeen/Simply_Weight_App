@@ -32,9 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
   double _weightValue = 0;
-  NavigationDestinationLabelBehavior labelBehavior =
-      NavigationDestinationLabelBehavior.onlyShowSelected;
-
+  NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   TextEditingController _weightTextFieldController = TextEditingController();
 
   Future<void> _displayAddWeightDialog(BuildContext context) async {
@@ -59,9 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     print(_weightTextFieldController.text);
                     setState(() {
-                      _weightValue =
-                          double.tryParse(_weightTextFieldController.text) ??
-                              00.00;
+                      _weightValue = double.tryParse(_weightTextFieldController.text) ?? 00.00;
                     });
                     _weightTextFieldController.clear();
                     Navigator.pop(context);

@@ -7,8 +7,7 @@ Future<Database> initializeDB() async {
   return openDatabase(
     join(path, "weights.db"),
     onCreate: (database, version) async {
-      await database.execute(
-          "CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, weight DOUBLE NOT NULL, dateTime DATETIME NOT NULL )");
+      await database.execute("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, weight DOUBLE NOT NULL, dateTime DATETIME NOT NULL )");
     },
     version: 1,
   );
@@ -32,6 +31,5 @@ Future<void> deleteUser(int id) async {
 
 Future<void> updateUsingHelper(Weight weight) async {
   final Database db = await initializeDB();
-  await db
-      .update('users', weight.toMap(), where: 'id= ?', whereArgs: [weight.id]);
+  await db.update('users', weight.toMap(), where: 'id= ?', whereArgs: [weight.id]);
 }
