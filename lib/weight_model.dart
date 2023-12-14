@@ -1,7 +1,7 @@
 class Weight {
   int id = 0;
   double weight = 0;
-  DateTime dateTime = DateTime.parse('0000-00-00');
+  DateTime dateTime = DateTime.now();
 
   Weight.empty();
 
@@ -21,6 +21,6 @@ class Weight {
 
   Map<String, dynamic> toMap() => {
         'weight': weight,
-        'dateTime': dateTime,
+        'dateTime': dateTime.toIso8601String(),
       };
 }

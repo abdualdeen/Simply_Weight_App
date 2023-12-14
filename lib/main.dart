@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:weight_app/database_helpers.dart';
+import 'package:weight_app/weight_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +34,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
   double _weightValue = 0;
+  late Future<Weight> weight;
+  DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   TextEditingController _weightTextFieldController = TextEditingController();
 
@@ -54,13 +58,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   }),
               MaterialButton(
                   child: const Text('Save'),
-                  onPressed: () {
+                  onPressed: () async {
                     print(_weightTextFieldController.text);
+                    // save information to local database
+                    Weight weight = Weight.empty();
+                    weight.weight = _weightValue;
+                    weight.dateTime = DateTime.now();
+
+                    await dbHelper.insertWeight(weight);
+                    initState();
+
                     setState(() {
+                      // set the text that shows the last recorded weight
                       _weightValue = double.tryParse(_weightTextFieldController.text) ?? 00.00;
                     });
                     _weightTextFieldController.clear();
-                    Navigator.pop(context);
+                    print(dbHelper.getAllWeights());
+                    if (context.mounted) Navigator.pop(context);
                   })
             ],
           );
