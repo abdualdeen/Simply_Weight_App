@@ -66,14 +66,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     weight.dateTime = DateTime.now();
 
                     await dbHelper.insertWeight(weight);
-                    initState();
+                    // initState(); todo: for when you implement pulling all weights
 
                     setState(() {
                       // set the text that shows the last recorded weight
                       _weightValue = double.tryParse(_weightTextFieldController.text) ?? 00.00;
                     });
                     _weightTextFieldController.clear();
-                    print(dbHelper.getAllWeights());
+                    Future<List<Weight>> weightListFuture = dbHelper.getAllWeights();
+                    List<Weight> weightList = await weightListFuture;
+                    print('printing:==========');
+                    for (Weight item in weightList) {
+                      print(item.weight);
+                    }
                     if (context.mounted) Navigator.pop(context);
                   })
             ],
@@ -134,3 +139,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+// todo: implement getting all weights to show graph
+// @override
+// void initState() {
+//   weights = this.getAllWeights();
+// }
+//
+// Future<List<Weight>> getAllWeights() async {
+//   return await DatabaseHelper().getAllUsers();
+// }

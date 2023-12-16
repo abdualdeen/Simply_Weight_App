@@ -10,7 +10,7 @@ class DatabaseHelper {
       onCreate: (database, version) async {
         await database.execute("CREATE TABLE weights (id INTEGER PRIMARY KEY AUTOINCREMENT, weight DOUBLE NOT NULL, dateTime DATETIME NOT NULL)");
       },
-      version: 2,
+      version: 1,
     );
   }
 

@@ -15,7 +15,7 @@ class Weight {
     return Weight(
       id: json['id'],
       weight: json['weight'],
-      dateTime: json['dateTime'],
+      dateTime: DateTime.parse(json['dateTime']),
     );
   }
 
