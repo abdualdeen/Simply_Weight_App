@@ -112,23 +112,28 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Card(
-        margin: const EdgeInsets.all(8.0),
-        child: SizedBox.expand(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Last recorded weight is',
-              ),
-              Text(
-                '$_weightValue',
-                style: Theme.of(context).textTheme.headlineMedium,
-              )
-            ],
+      body: <Widget>[
+        // home page
+        Card(
+          margin: const EdgeInsets.all(8.0),
+          child: SizedBox.expand(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Last recorded weight is',
+                ),
+                Text(
+                  '$_weightValue',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                )
+              ],
+            ),
           ),
         ),
-      ),
+        // charts page
+        const Card(margin: const EdgeInsets.all(8.0), child: SizedBox.expand()),
+      ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add',
         child: const Icon(Icons.add),
