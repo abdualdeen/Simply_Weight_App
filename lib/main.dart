@@ -12,11 +12,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ThemeData darkTheme = ThemeData(
+      appBarTheme: const AppBarTheme(
+        color: Colors.redAccent,
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.red,
+        brightness: Brightness.dark,
+      ),
+    );
     return MaterialApp(
       title: 'Simple Weight Tracking',
       theme: ThemeData(
         useMaterial3: true,
       ),
+      darkTheme: darkTheme,
       home: const MyHomePage(title: 'Simple Weight Tracking'),
     );
   }
