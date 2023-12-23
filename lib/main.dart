@@ -12,9 +12,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ThemeData lightTheme = ThemeData(
+      appBarTheme: const AppBarTheme(
+        color: Colors.red,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.red,
+        brightness: Brightness.light,
+      ),
+    );
+
     ThemeData darkTheme = ThemeData(
       appBarTheme: const AppBarTheme(
-        color: Colors.redAccent,
+        color: Colors.red,
         iconTheme: IconThemeData(color: Colors.white),
       ),
       colorScheme: ColorScheme.fromSeed(
@@ -24,9 +35,7 @@ class MyApp extends StatelessWidget {
     );
     return MaterialApp(
       title: 'Simple Weight Tracking',
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
+      theme: lightTheme,
       darkTheme: darkTheme,
       home: const MyHomePage(title: 'Simple Weight Tracking'),
     );
