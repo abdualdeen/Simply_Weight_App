@@ -152,7 +152,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         // charts page
-        const Card(margin: const EdgeInsets.all(8.0), child: SizedBox.expand()),
+        Card(
+            margin: const EdgeInsets.all(8.0),
+            child: SizedBox.expand(
+                // todo: add line chart here
+                )),
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add',
