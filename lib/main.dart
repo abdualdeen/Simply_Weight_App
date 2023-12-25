@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/weight_model.dart';
@@ -54,7 +55,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
   double _weightValue = 0;
-  late Future<Weight> weight;
+  late Future<List<Weight>> allWeights;
   DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   TextEditingController _weightTextFieldController = TextEditingController();
@@ -81,11 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () async {
                     print(_weightTextFieldController.text);
                     // save information to local database
-                    Weight weight = Weight.empty();
-                    weight.weight = _weightValue;
-                    weight.dateTime = DateTime.now();
+                    Weight newWeight = Weight.empty();
+                    newWeight.weight = _weightValue;
+                    newWeight.dateTime = DateTime.now();
 
-                    await dbHelper.insertWeight(weight);
+                    await dbHelper.insertWeight(newWeight);
                     // initState(); todo: for when you implement pulling all weights
 
                     setState(() {
@@ -105,6 +106,28 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         });
   }
+
+  Future<List<Weight>> getAllWeights() async {
+    return await DatabaseHelper().getAllWeights();
+  }
+
+  Future<List<FlSpot>> getWeightSpots() async {
+    List<Weight> allWeights = await getAllWeights();
+
+    // Create FlSpot instances from Weight objects
+    List<FlSpot> spots = allWeights.map((weight) {
+      // Assuming Weight has properties x (representing the x-axis value) and y (representing the y-axis value)
+      return FlSpot(weight.dateTime, weight.weight);
+    }).toList();
+
+    return spots;
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   allWeights = getAllWeights();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -153,10 +176,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         // charts page
         Card(
-            margin: const EdgeInsets.all(8.0),
-            child: SizedBox.expand(
-                // todo: add line chart here
-                )),
+          margin: const EdgeInsets.all(8.0),
+          child: LineChart(
+            LineChartData(borderData: FlBorderData(show: false), lineBarsData: [
+              LineChartBarData(spots: [for (Weight weightPoint in allWeights) {}]),
+            ]),
+          ),
+        ),
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add',
@@ -164,17 +190,9 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           _displayAddWeightDialog(context);
         },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
 
 // todo: implement getting all weights to show graph
-// @override
-// void initState() {
-//   weights = this.getAllWeights();
-// }
-//
-// Future<List<Weight>> getAllWeights() async {
-//   return await DatabaseHelper().getAllUsers();
-// }
