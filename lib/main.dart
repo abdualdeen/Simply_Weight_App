@@ -116,8 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Create FlSpot instances from Weight objects
     List<FlSpot> spots = allWeights.map((weight) {
-      // Assuming Weight has properties x (representing the x-axis value) and y (representing the y-axis value)
-      return FlSpot(weight.dateTime, weight.weight);
+      return FlSpot(weight.dateTime.millisecondsSinceEpoch.toDouble(), weight.weight);
+      // todo: figure out how to turn dateTime back to show on chart or how to deal with it
     }).toList();
 
     return spots;
@@ -179,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
           margin: const EdgeInsets.all(8.0),
           child: LineChart(
             LineChartData(borderData: FlBorderData(show: false), lineBarsData: [
-              LineChartBarData(spots: [for (Weight weightPoint in allWeights) {}]),
+              LineChartBarData(spots: await getWeightSpots()),
             ]),
           ),
         ),
