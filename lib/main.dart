@@ -86,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     newWeight.weight = _weightValue;
                     newWeight.dateTime = DateTime.now();
 
+                    // todo: implement some input validation for weight
                     await dbHelper.insertWeight(newWeight);
                     // initState(); todo: for when you implement pulling all weights
 
@@ -94,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       _weightValue = double.tryParse(_weightTextFieldController.text) ?? 00.00;
                     });
                     _weightTextFieldController.clear();
+                    // todo: remove debugging lines
                     Future<List<Weight>> weightListFuture = dbHelper.getAllWeights();
                     List<Weight> weightList = await weightListFuture;
                     print('printing:==========');
@@ -107,12 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  Future<List<Weight>> getAllWeights() async {
-    return await DatabaseHelper().getAllWeights();
-  }
-
   Future<List<FlSpot>> getWeightSpots() async {
-    List<Weight> allWeights = await getAllWeights();
+    List<Weight> allWeights = await DatabaseHelper().getAllWeights();
 
     // Create FlSpot instances from Weight objects
     List<FlSpot> spots = allWeights.map((weight) {
@@ -177,11 +175,29 @@ class _MyHomePageState extends State<MyHomePage> {
         // charts page
         Card(
           margin: const EdgeInsets.all(8.0),
-          child: LineChart(
-            LineChartData(borderData: FlBorderData(show: false), lineBarsData: [
-              LineChartBarData(spots: await getWeightSpots()),
-            ]),
-          ),
+          child: FutureBuilder<List<FlSpot>>(
+              future: getWeightSpots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  // todo: implement error logging
+                  print(snapshot.error);
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  List<FlSpot> weightSpots = snapshot.data ?? [];
+                  // todo: remove debugging
+                  print('========');
+                  for (FlSpot item in weightSpots) {
+                    print(item.toString());
+                  }
+                  return LineChart(
+                    LineChartData(borderData: FlBorderData(show: false), lineBarsData: [
+                      LineChartBarData(spots: weightSpots),
+                    ]),
+                  );
+                }
+              }),
         ),
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
@@ -194,5 +210,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-// todo: implement getting all weights to show graph
