@@ -87,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     newWeight.dateTime = DateTime.now();
 
                     // todo: implement some input validation for weight
+                    // todo: fix problem where the first input being recorded is zero.
                     await dbHelper.insertWeight(newWeight);
                     // initState(); todo: for when you implement pulling all weights
 
@@ -176,44 +177,47 @@ class _MyHomePageState extends State<MyHomePage> {
         Card(
           margin: const EdgeInsets.all(8.0),
           child: FutureBuilder<List<FlSpot>>(
-              future: getWeightSpots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  // todo: implement error logging
-                  print(snapshot.error);
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  List<FlSpot> weightSpots = snapshot.data ?? [];
-                  // todo: remove debugging
-                  print('========');
-                  for (FlSpot item in weightSpots) {
-                    print(item.toString());
-                  }
-                  return LineChart(
-                    LineChartData(
-                        borderData: FlBorderData(show: false),
-                        titlesData: FlTitlesData(
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (value, meta) {
-                                Widget text;
-                                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                                // Format DateTime to "MM/dd" string to display on chart
-                                text = Text("${dateTime.month}/${dateTime.day}");
-                                return SideTitleWidget(axisSide: meta.axisSide, child: text);
-                              },
-                            ),
+            future: getWeightSpots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                // todo: implement error logging
+                print(snapshot.error);
+                return Text('Error: ${snapshot.error}');
+              } else {
+                List<FlSpot> weightSpots = snapshot.data ?? [];
+                // todo: remove debugging
+                print('========');
+                for (FlSpot item in weightSpots) {
+                  print(item.toString());
+                }
+                return LineChart(
+                  LineChartData(
+                      borderData: FlBorderData(show: false),
+                      titlesData: FlTitlesData(
+                        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              Widget text;
+                              DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                              // Format DateTime to "MM/dd" string to display on chart
+                              text = Text("${dateTime.month}/${dateTime.day}");
+                              return SideTitleWidget(axisSide: meta.axisSide, child: text);
+                            },
                           ),
                         ),
-                        lineBarsData: [
-                          LineChartBarData(spots: weightSpots),
-                        ]),
-                  );
-                }
-              }),
+                      ),
+                      lineBarsData: [
+                        LineChartBarData(spots: weightSpots),
+                      ]),
+                );
+              }
+            },
+          ),
         ),
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
