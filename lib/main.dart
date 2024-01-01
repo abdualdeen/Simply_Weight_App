@@ -192,9 +192,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     print(item.toString());
                   }
                   return LineChart(
-                    LineChartData(borderData: FlBorderData(show: false), lineBarsData: [
-                      LineChartBarData(spots: weightSpots),
-                    ]),
+                    LineChartData(
+                        borderData: FlBorderData(show: false),
+                        titlesData: FlTitlesData(
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                Widget text;
+                                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                                // Format DateTime to "MM/dd" string to display on chart
+                                text = Text("${dateTime.month}/${dateTime.day}");
+                                return SideTitleWidget(axisSide: meta.axisSide, child: text);
+                              },
+                            ),
+                          ),
+                        ),
+                        lineBarsData: [
+                          LineChartBarData(spots: weightSpots),
+                        ]),
                   );
                 }
               }),
