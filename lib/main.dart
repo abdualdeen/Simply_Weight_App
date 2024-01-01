@@ -80,10 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialButton(
                   child: const Text('Save'),
                   onPressed: () async {
+                    print('Here is the weight value from the controller: ');
                     print(_weightTextFieldController.text);
+                    double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
                     // save information to local database
                     Weight newWeight = Weight.empty();
-                    newWeight.weight = _weightValue;
+                    newWeight.weight = newWeightValue;
                     newWeight.dateTime = DateTime.now();
 
                     // todo: implement some input validation for weight
@@ -93,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     setState(() {
                       // set the text that shows the last recorded weight
-                      _weightValue = double.tryParse(_weightTextFieldController.text) ?? 00.00;
+                      _weightValue = newWeightValue;
                     });
                     _weightTextFieldController.clear();
                     // todo: remove debugging lines
