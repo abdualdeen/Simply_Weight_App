@@ -89,7 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     newWeight.dateTime = DateTime.now();
 
                     // todo: implement some input validation for weight
-                    // todo: fix problem where the first input being recorded is zero.
                     await dbHelper.insertWeight(newWeight);
                     // initState(); todo: for when you implement pulling all weights
 
@@ -150,6 +149,10 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.bar_chart),
             label: 'Chart',
           ),
+          NavigationDestination(
+            icon: Icon(Icons.history),
+            label: 'History',
+          ),
         ],
       ),
       appBar: AppBar(
@@ -196,29 +199,37 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
                 return LineChart(
                   LineChartData(
-                      borderData: FlBorderData(show: false),
-                      titlesData: FlTitlesData(
-                        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (value, meta) {
-                              Widget text;
-                              DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                              // Format DateTime to "MM/dd" string to display on chart
-                              text = Text("${dateTime.month}/${dateTime.day}");
-                              return SideTitleWidget(axisSide: meta.axisSide, child: text);
-                            },
-                          ),
+                    borderData: FlBorderData(show: false),
+                    titlesData: FlTitlesData(
+                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            Widget text;
+                            DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                            // Format DateTime to "MM/dd" string to display on chart
+                            text = Text("${dateTime.month}/${dateTime.day}");
+                            return SideTitleWidget(axisSide: meta.axisSide, child: text);
+                          },
                         ),
                       ),
-                      lineBarsData: [
-                        LineChartBarData(spots: weightSpots),
-                      ]),
+                    ),
+                    lineBarsData: [
+                      LineChartBarData(spots: weightSpots),
+                    ],
+                  ),
                 );
               }
             },
+          ),
+        ),
+        // history page
+        Card(
+          margin: const EdgeInsets.all(8.0),
+          child: ListView(
+            children: [],
           ),
         ),
       ][currentPageIndex],
