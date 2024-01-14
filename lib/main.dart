@@ -117,10 +117,31 @@ class _MyHomePageState extends State<MyHomePage> {
     // Create FlSpot instances from Weight objects
     List<FlSpot> spots = allWeights.map((weight) {
       return FlSpot(weight.dateTime.millisecondsSinceEpoch.toDouble(), weight.weight);
-      // todo: figure out how to turn dateTime back to show on chart or how to deal with it
     }).toList();
 
     return spots;
+  }
+
+  Future<ListView> getHistoryListView() async {
+    List<Weight> allWeights = await DatabaseHelper().getAllWeights();
+
+    // Create ListTile instances from Weight objects
+    List<ListTile> listTiles = allWeights.map((weight) {
+      Widget titleText = Text(weight.weight.toString());
+      Widget subtitleText = Text("${weight.dateTime.month}/${weight.dateTime.day}/${weight.dateTime.year}  ${weight.dateTime.hour}");
+
+      return ListTile(
+        title: titleText,
+        subtitle: subtitleText,
+      );
+    }).toList();
+
+    // Create ListView to be returned
+    ListView listView = ListView(
+      children: listTiles,
+    );
+
+    return listView;
   }
 
   // @override
@@ -206,6 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
+                          // dealing with how the date axis should be displayed.
                           getTitlesWidget: (value, meta) {
                             Widget text;
                             DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
@@ -228,8 +250,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // history page
         Card(
           margin: const EdgeInsets.all(8.0),
-          child: ListView(
-            children: [],
+          child: FutureBuilder<ListView>(
+            future: getHistoryListView(),
+            builder: (context, snapshot) {},
           ),
         ),
       ][currentPageIndex],
