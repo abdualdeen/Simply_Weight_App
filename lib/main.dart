@@ -252,7 +252,21 @@ class _MyHomePageState extends State<MyHomePage> {
           margin: const EdgeInsets.all(8.0),
           child: FutureBuilder<ListView>(
             future: getHistoryListView(),
-            builder: (context, snapshot) {},
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                // todo: implement error logging
+                print(snapshot.error);
+                return Text('Error: ${snapshot.error}');
+              } else {
+                // todo: figure out how to show the list view
+                List<ListTile> listTiles = (List<ListTile>)snapshot.data ?? []
+                return ListView(
+                  children: listTiles,
+                );
+              }
+            },
           ),
         ),
       ][currentPageIndex],
