@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Create ListTile instances from Weight objects
     List<ListTile> listTiles = allWeights.map((weight) {
       Widget titleText = Text(weight.weight.toString());
-      Widget subtitleText = Text("${weight.dateTime.month}/${weight.dateTime.day}/${weight.dateTime.year}  ${weight.dateTime.hour}");
+      Widget subtitleText = Text("${weight.dateTime.month}/${weight.dateTime.day}/${weight.dateTime.year}  ${weight.dateTime.hour}:${weight.dateTime.minute}");
 
       return ListTile(
         title: titleText,
@@ -252,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
           margin: const EdgeInsets.all(8.0),
           child: FutureBuilder<ListView>(
             future: getHistoryListView(),
-            builder: (context, snapshot) {
+            builder: (context, AsyncSnapshot<ListView> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
@@ -260,11 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 print(snapshot.error);
                 return Text('Error: ${snapshot.error}');
               } else {
-                // todo: figure out how to show the list view
-                List<ListTile> listTiles = (List<ListTile>)snapshot.data ?? []
-                return ListView(
-                  children: listTiles,
-                );
+                return snapshot.data ?? Container();
               }
             },
           ),
