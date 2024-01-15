@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/weight_model.dart';
 
@@ -9,6 +10,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  static const String DATE_TIME_FORMAT = 'MM/dd/yyyy    HH:mm a';
 
   // This widget is the root of your application.
   @override
@@ -124,11 +126,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<ListView> getHistoryListView() async {
     List<Weight> allWeights = await DatabaseHelper().getAllWeights();
+    DateFormat dateFormat = DateFormat(MyApp.DATE_TIME_FORMAT);
 
     // Create ListTile instances from Weight objects
-    List<ListTile> listTiles = allWeights.map((weight) {
+    List<ListTile> listTiles = allWeights.reversed.map((weight) {
       Widget titleText = Text(weight.weight.toString());
-      Widget subtitleText = Text("${weight.dateTime.month}/${weight.dateTime.day}/${weight.dateTime.year}  ${weight.dateTime.hour}:${weight.dateTime.minute}");
+      Widget subtitleText = Text(dateFormat.format(weight.dateTime));
 
       return ListTile(
         title: titleText,
