@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<FlSpot>> getWeightSpots() async {
-    List<Weight> allWeights = await DatabaseHelper().getAllWeights();
+    List<Weight> allWeights = await dbHelper.getAllWeights();
 
     // Create FlSpot instances from Weight objects
     List<FlSpot> spots = allWeights.map((weight) {
@@ -142,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<ListView> getHistoryListView() async {
-    List<Weight> allWeights = await DatabaseHelper().getAllWeights();
+    List<Weight> allWeights = await dbHelper.getAllWeights();
     DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
 
     // Create ListTile instances from Weight objects
@@ -162,6 +162,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return listView;
+  }
+
+  Future<Column> getHomePage() async {
+    List<Weight> lastWeight = await dbHelper.getAllWeights();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('Last recorded weigth is'),
+        Text(
+          lastWeight.first.weight.toString(),
+          style: Theme.of(context).textTheme.headlineMedium,
+        )
+      ],
+    );
   }
 
   @override
@@ -213,17 +227,19 @@ class _MyHomePageState extends State<MyHomePage> {
         Card(
           margin: const EdgeInsets.all(8.0),
           child: SizedBox.expand(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Last recorded weight is',
-                ),
-                Text(
-                  '$_weightValue',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                )
-              ],
+            child: FutureBuilder<Column>(
+              future: getHomePage(),
+              builder: (context, AsyncSnapshot<Column> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  // todo: implement error logging
+                  // print(snapshot.error);
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return snapshot.data ?? Container();
+                }
+              },
             ),
           ),
         ),
@@ -237,15 +253,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 // todo: implement error logging
-                print(snapshot.error);
+                // print(snapshot.error);
                 return Text('Error: ${snapshot.error}');
               } else {
                 List<FlSpot> weightSpots = snapshot.data ?? [];
                 // todo: remove debugging
-                print('========');
-                for (FlSpot item in weightSpots) {
-                  print(item.toString());
-                }
+                // print('========');
+                // for (FlSpot item in weightSpots) {
+                //   print(item.toString());
+                // }
                 return LineChart(
                   LineChartData(
                     borderData: FlBorderData(show: false),
@@ -285,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 // todo: implement error logging
-                print(snapshot.error);
+                // print(snapshot.error);
                 return Text('Error: ${snapshot.error}');
               } else {
                 return snapshot.data ?? Container();
