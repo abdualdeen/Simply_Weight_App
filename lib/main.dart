@@ -113,6 +113,24 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  Future<void> _displayAboutDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('About'),
+            content: const Text('Made by Abdullah Aldeen'),
+            actions: [
+              MaterialButton(
+                  child: const Text('Ok'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          );
+        });
+  }
+
   Future<List<FlSpot>> getWeightSpots() async {
     List<Weight> allWeights = await DatabaseHelper().getAllWeights();
 
@@ -182,6 +200,20 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem<int>(value: 0, child: Text('About')),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 0) {
+                _displayAboutDialog(context);
+              }
+            },
+          ),
+        ],
       ),
       body: <Widget>[
         // home page
