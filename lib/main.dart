@@ -56,9 +56,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
-  double _weightValue = 0;
   late Future<List<Weight>> allWeights;
   DatabaseHelper dbHelper = DatabaseHelper();
+  double _weightValue = 0;
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   TextEditingController _weightTextFieldController = TextEditingController();
 
@@ -92,7 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     // todo: implement some input validation for weight
                     await dbHelper.insertWeight(newWeight);
-                    // initState(); todo: for when you implement pulling all weights
 
                     setState(() {
                       // set the text that shows the last recorded weight
@@ -164,12 +163,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return listView;
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   allWeights = getAllWeights();
-  // }
 
   @override
   Widget build(BuildContext context) {

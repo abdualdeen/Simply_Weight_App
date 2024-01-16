@@ -35,4 +35,10 @@ class DatabaseHelper {
     final Database db = await initializeDB();
     await db.update('weights', weight.toMap(), where: 'id= ?', whereArgs: [weight.id]);
   }
+
+  Future<List<Weight>> getLastWeight() async {
+    final Database db = await initializeDB();
+    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 1);
+    return result.map((e) => Weight.fromMap(e)).toList();
+  }
 }
