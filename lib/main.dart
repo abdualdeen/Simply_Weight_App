@@ -169,7 +169,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('Last recorded weigth is'),
+        Text(
+          'Your last recorded weigth is',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         Text(
           lastWeight.first.weight.toString(),
           style: Theme.of(context).textTheme.headlineMedium,
