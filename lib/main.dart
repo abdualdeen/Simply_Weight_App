@@ -58,7 +58,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
   late Future<List<Weight>> allWeights;
   DatabaseHelper dbHelper = DatabaseHelper();
-  double _weightValue = 0;
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   TextEditingController _weightTextFieldController = TextEditingController();
 
@@ -93,10 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     // todo: implement some input validation for weight
                     await dbHelper.insertWeight(newWeight);
 
-                    setState(() {
-                      // set the text that shows the last recorded weight
-                      _weightValue = newWeightValue;
-                    });
                     _weightTextFieldController.clear();
                     // todo: remove debugging lines
                     Future<List<Weight>> weightListFuture = dbHelper.getAllWeights();
@@ -105,6 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     for (Weight item in weightList) {
                       print(item.weight);
                     }
+                    // invoke this function to update the homepage and latest weight.
+                    getHomePage();
                     if (context.mounted) Navigator.pop(context);
                   })
             ],
