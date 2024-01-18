@@ -61,72 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   TextEditingController _weightTextFieldController = TextEditingController();
 
-  Future<void> _displayAddWeightDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Add weight'),
-            content: TextField(
-              controller: _weightTextFieldController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(hintText: 'Weight'),
-            ),
-            actions: [
-              MaterialButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              MaterialButton(
-                  child: const Text('Save'),
-                  onPressed: () async {
-                    print('Here is the weight value from the controller: ');
-                    print(_weightTextFieldController.text);
-                    double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
-                    // save information to local database
-                    Weight newWeight = Weight.empty();
-                    newWeight.weight = newWeightValue;
-                    newWeight.dateTime = DateTime.now();
-
-                    // todo: implement some input validation for weight
-                    await dbHelper.insertWeight(newWeight);
-
-                    _weightTextFieldController.clear();
-                    // todo: remove debugging lines
-                    Future<List<Weight>> weightListFuture = dbHelper.getAllWeights();
-                    List<Weight> weightList = await weightListFuture;
-                    print('printing:==========');
-                    for (Weight item in weightList) {
-                      print(item.weight);
-                    }
-                    // invoke this function to update the homepage and latest weight.
-                    getHomePage();
-                    if (context.mounted) Navigator.pop(context);
-                  })
-            ],
-          );
-        });
-  }
-
-  Future<void> _displayAboutDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('About'),
-            content: const Text('Made by Abdullah Aldeen'),
-            actions: [
-              MaterialButton(
-                  child: const Text('Ok'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-            ],
-          );
-        });
-  }
-
   Future<List<FlSpot>> getWeightSpots() async {
     List<Weight> allWeights = await dbHelper.getAllWeights();
 
@@ -162,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Column> getHomePage() async {
-    List<Weight> lastWeight = await dbHelper.getAllWeights();
+    List<Weight> lastWeight = await dbHelper.getLastWeight();
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -176,6 +110,66 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ],
     );
+  }
+
+  Future<void> _displayAddWeightDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Add weight'),
+            content: TextField(
+              controller: _weightTextFieldController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(hintText: 'Weight'),
+            ),
+            actions: [
+              MaterialButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              MaterialButton(
+                  child: const Text('Save'),
+                  onPressed: () async {
+                    print('Here is the weight value from the controller: ');
+                    print(_weightTextFieldController.text);
+                    double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
+                    // save information to local database
+                    Weight newWeight = Weight.empty();
+                    newWeight.weight = newWeightValue;
+                    newWeight.dateTime = DateTime.now();
+
+                    // todo: implement some input validation for weight
+                    await dbHelper.insertWeight(newWeight);
+
+                    _weightTextFieldController.clear();
+
+                    // invoke this function to update the homepage and latest weight.
+                    setState(() {});
+                    if (context.mounted) Navigator.pop(context);
+                  })
+            ],
+          );
+        });
+  }
+
+  Future<void> _displayAboutDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('About'),
+            content: const Text('Made by Abdullah Aldeen'),
+            actions: [
+              MaterialButton(
+                  child: const Text('Ok'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          );
+        });
   }
 
   @override
