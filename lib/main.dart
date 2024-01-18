@@ -72,6 +72,53 @@ class _MyHomePageState extends State<MyHomePage> {
     return spots;
   }
 
+  Future<void> _displayEditWeightDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Edit weight'),
+            content: TextField(
+              controller: _weightTextFieldController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(hintText: 'Weight'),
+            ),
+            actions: [
+              MaterialButton(
+                  child: const Text('Delete'),
+                  onPressed: () async {
+                    if (context.mounted) Navigator.pop(context);
+                  }),
+              MaterialButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              MaterialButton(
+                  child: const Text('Save'),
+                  onPressed: () async {
+                    // print('Here is the weight value from the controller: ');
+                    // print(_weightTextFieldController.text);
+                    // double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
+                    // // save information to local database
+                    // Weight newWeight = Weight.empty();
+                    // newWeight.weight = newWeightValue;
+                    // newWeight.dateTime = DateTime.now();
+                    //
+                    // // todo: implement some input validation for weight
+                    // await dbHelper.insertWeight(newWeight);
+                    //
+                    // _weightTextFieldController.clear();
+                    //
+                    // // invoke this function to update the homepage and latest weight.
+                    // setState(() {});
+                    if (context.mounted) Navigator.pop(context);
+                  })
+            ],
+          );
+        });
+  }
+
   Future<ListView> getHistoryListView() async {
     List<Weight> allWeights = await dbHelper.getAllWeights();
     DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
@@ -85,6 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: titleText,
         subtitle: subtitleText,
         key: Key(weight.id.toString()), // ListTile has key which only takes strings. So a jankey solution but what can you do.
+        onTap: () {
+          _displayEditWeightDialog(context);
+        },
       );
     }).toList();
 
