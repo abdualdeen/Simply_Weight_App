@@ -84,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return ListTile(
         title: titleText,
         subtitle: subtitleText,
+        key: Key(weight.id.toString()), // ListTile has key which only takes strings. So a jankey solution but what can you do.
       );
     }).toList();
 
