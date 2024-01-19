@@ -72,6 +72,29 @@ class _MyHomePageState extends State<MyHomePage> {
     return spots;
   }
 
+  Future<void> _displayDeleteWeightDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Are you sure you want to delete?'),
+            actions: [
+              MaterialButton(
+                  child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                  onPressed: () async {
+                    dbHelper.deleteWeight(context.widget.)
+                    if (context.mounted) Navigator.pop(context);
+                  }),
+              MaterialButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          );
+        });
+  }
+
   Future<void> _displayEditWeightDialog(BuildContext context) async {
     return showDialog(
         context: context,
@@ -84,36 +107,46 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: const InputDecoration(hintText: 'Weight'),
             ),
             actions: [
-              MaterialButton(
-                  child: const Text('Delete'),
-                  onPressed: () async {
-                    if (context.mounted) Navigator.pop(context);
-                  }),
-              MaterialButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              MaterialButton(
-                  child: const Text('Save'),
-                  onPressed: () async {
-                    // print('Here is the weight value from the controller: ');
-                    // print(_weightTextFieldController.text);
-                    // double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
-                    // // save information to local database
-                    // Weight newWeight = Weight.empty();
-                    // newWeight.weight = newWeightValue;
-                    // newWeight.dateTime = DateTime.now();
-                    //
-                    // // todo: implement some input validation for weight
-                    // await dbHelper.insertWeight(newWeight);
-                    //
-                    // _weightTextFieldController.clear();
-                    //
-                    // // invoke this function to update the homepage and latest weight.
-                    // setState(() {});
-                    if (context.mounted) Navigator.pop(context);
-                  })
+              Row(
+                children: [
+                  MaterialButton(
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      onPressed: () async {
+                        _displayDeleteWeightDialog(context);
+                      }),
+                  MaterialButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                  MaterialButton(
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                      onPressed: () async {
+                        // print('Here is the weight value from the controller: ');
+                        // print(_weightTextFieldController.text);
+                        // double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
+                        // // save information to local database
+                        // Weight newWeight = Weight.empty();
+                        // newWeight.weight = newWeightValue;
+                        // newWeight.dateTime = DateTime.now();
+                        //
+                        // // todo: implement some input validation for weight
+                        // await dbHelper.insertWeight(newWeight);
+                        //
+                        // _weightTextFieldController.clear();
+                        //
+                        // // invoke this function to update the homepage and latest weight.
+                        // setState(() {});
+                        if (context.mounted) Navigator.pop(context);
+                      }),
+                ],
+              )
             ],
           );
         });
