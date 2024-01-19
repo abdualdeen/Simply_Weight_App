@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return spots;
   }
 
-  Future<void> _displayDeleteWeightDialog(BuildContext context) async {
+  Future<dynamic> _displayDeleteWeightDialog(BuildContext context, int weightId) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -82,7 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialButton(
                   child: const Text('Delete', style: TextStyle(color: Colors.red)),
                   onPressed: () async {
-                    dbHelper.deleteWeight(context.widget.)
+                    // todo: handle error? in case it doesn't delete.
+                    dbHelper.deleteWeight(weightId);
+                    setState(() {});
+                    // todo: handle closing all dialogs
                     if (context.mounted) Navigator.pop(context);
                   }),
               MaterialButton(
@@ -95,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  Future<void> _displayEditWeightDialog(BuildContext context) async {
+  Future<void> _displayEditWeightDialog(BuildContext context, int weightId) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -115,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () async {
-                        _displayDeleteWeightDialog(context);
+                        _displayDeleteWeightDialog(context, weightId);
                       }),
                   MaterialButton(
                       child: const Text('Cancel'),
@@ -166,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
         subtitle: subtitleText,
         key: Key(weight.id.toString()), // ListTile has key which only takes strings. So a jankey solution but what can you do.
         onTap: () {
-          _displayEditWeightDialog(context);
+          _displayEditWeightDialog(context, weight.id);
         },
       );
     }).toList();
