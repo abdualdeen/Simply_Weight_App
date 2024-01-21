@@ -55,6 +55,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool deleteWeight = false;
   int currentPageIndex = 0;
   late Future<List<Weight>> allWeights;
   DatabaseHelper dbHelper = DatabaseHelper();
@@ -84,14 +85,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () async {
                     // todo: handle error? in case it doesn't delete.
                     dbHelper.deleteWeight(weightId);
-                    setState(() {});
-                    // todo: handle closing all dialogs
+                    deleteWeight = true;
                     if (context.mounted) Navigator.pop(context);
                   }),
               MaterialButton(
                   child: const Text('Cancel'),
                   onPressed: () {
-                    Navigator.pop(context);
+                    if (context.mounted) Navigator.pop(context);
                   }),
             ],
           );
@@ -118,12 +118,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () async {
-                        _displayDeleteWeightDialog(context, weightId);
+                        await _displayDeleteWeightDialog(context, weightId);
+                        if (deleteWeight) {
+                          if (context.mounted) Navigator.pop(context);
+                          setState(() {});
+                          deleteWeight = false;
+                        }
                       }),
                   MaterialButton(
                       child: const Text('Cancel'),
                       onPressed: () {
-                        Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       }),
                   MaterialButton(
                       child: const Text(
@@ -189,11 +194,11 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Text(
           'Your last recorded weigth is',
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: Theme.of(context).textTheme.headlineSmall, // todo: check buildcontext async gaps issue
         ),
         Text(
           lastWeight.first.weight.toString(),
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context).textTheme.headlineMedium, // todo: check buildcontext async gaps issue
         )
       ],
     );
