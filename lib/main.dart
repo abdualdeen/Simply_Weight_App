@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late Future<List<Weight>> allWeights;
   DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
-  TextEditingController _weightTextFieldController = TextEditingController();
+  final TextEditingController _weightTextFieldController = TextEditingController();
 
   Future<List<FlSpot>> getWeightSpots() async {
     List<Weight> allWeights = await dbHelper.getAllWeights();
@@ -98,14 +98,15 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  Future<void> _displayEditWeightDialog(BuildContext context, int weightId) async {
+  Future<void> _displayEditWeightDialog(BuildContext context, Weight weight) async {
+    TextEditingController weightEditTextController = TextEditingController(text: weight.weight.toString());
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Edit weight'),
             content: TextField(
-              controller: _weightTextFieldController,
+              controller: weightEditTextController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(hintText: 'Weight'),
             ),
@@ -118,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () async {
-                        await _displayDeleteWeightDialog(context, weightId);
+                        await _displayDeleteWeightDialog(context, weight.id);
                         if (deleteWeight) {
                           if (context.mounted) Navigator.pop(context);
                           setState(() {});
@@ -136,22 +137,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(color: Colors.green),
                       ),
                       onPressed: () async {
-                        // print('Here is the weight value from the controller: ');
-                        // print(_weightTextFieldController.text);
-                        // double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
-                        // // save information to local database
-                        // Weight newWeight = Weight.empty();
-                        // newWeight.weight = newWeightValue;
-                        // newWeight.dateTime = DateTime.now();
-                        //
-                        // // todo: implement some input validation for weight
-                        // await dbHelper.insertWeight(newWeight);
-                        //
-                        // _weightTextFieldController.clear();
-                        //
-                        // // invoke this function to update the homepage and latest weight.
-                        // setState(() {});
+                        print('Here is the weight value from the edit controller: ');
+                        print(weightEditTextController.text);
+
+                        // todo: implement some input validation for weight
+                        double editedWeightValue = double.tryParse(weightEditTextController.text) ?? 0.0;
+
+                        // save information to local database
+                        Weight editedWeight = Weight.empty();
+                        editedWeight.id = weight.id;
+                        editedWeight.weight = editedWeightValue;
+                        editedWeight.dateTime = weight.dateTime;
+                        await dbHelper.updateUsingHelper(editedWeight);
+
+                        weightEditTextController.clear();
                         if (context.mounted) Navigator.pop(context);
+                        // // invoke this function to update the homepage and latest weight.
+                        setState(() {});
                       }),
                 ],
               )
@@ -174,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
         subtitle: subtitleText,
         key: Key(weight.id.toString()), // ListTile has key which only takes strings. So a jankey solution but what can you do.
         onTap: () {
-          _displayEditWeightDialog(context, weight.id);
+          _displayEditWeightDialog(context, weight);
         },
       );
     }).toList();
@@ -224,17 +226,14 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialButton(
                   child: const Text('Save'),
                   onPressed: () async {
-                    print('Here is the weight value from the controller: ');
-                    print(_weightTextFieldController.text);
+                    // todo: implement some input validation for weight
                     double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
                     // save information to local database
                     Weight newWeight = Weight.empty();
                     newWeight.weight = newWeightValue;
                     newWeight.dateTime = DateTime.now();
 
-                    // todo: implement some input validation for weight
                     await dbHelper.insertWeight(newWeight);
-
                     _weightTextFieldController.clear();
 
                     // invoke this function to update the homepage and latest weight.
