@@ -145,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         editedWeight.id = weight.id;
                         editedWeight.weight = editedWeightValue;
                         editedWeight.dateTime = weight.dateTime;
-                        await dbHelper.updateUsingHelper(editedWeight);
+                        await dbHelper.updateWeight(editedWeight);
 
                         weightEditTextController.clear();
                         if (context.mounted) Navigator.pop(context);
@@ -316,7 +316,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   // todo: implement error logging
-                  // print(snapshot.error);
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return snapshot.data ?? Container();
@@ -335,7 +334,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 // todo: implement error logging
-                // print(snapshot.error);
                 return Text('Error: ${snapshot.error}');
               } else {
                 List<FlSpot> weightSpots = snapshot.data ?? [];
@@ -378,7 +376,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 // todo: implement error logging
-                // print(snapshot.error);
                 return Text('Error: ${snapshot.error}');
               } else {
                 return snapshot.data ?? Container();

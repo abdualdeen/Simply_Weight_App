@@ -30,8 +30,7 @@ class DatabaseHelper {
     db.delete('weights', where: 'id= ?', whereArgs: [id]);
   }
 
-// todo: make sure this is working properly for updating weights
-  Future<void> updateUsingHelper(Weight weight) async {
+  Future<void> updateWeight(Weight weight) async {
     final Database db = await initializeDB();
     await db.update('weights', weight.toMap(), where: 'id= ?', whereArgs: [weight.id]);
   }
