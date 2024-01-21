@@ -137,9 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(color: Colors.green),
                       ),
                       onPressed: () async {
-                        print('Here is the weight value from the edit controller: ');
-                        print(weightEditTextController.text);
-
                         // todo: implement some input validation for weight
                         double editedWeightValue = double.tryParse(weightEditTextController.text) ?? 0.0;
 
@@ -342,11 +339,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Text('Error: ${snapshot.error}');
               } else {
                 List<FlSpot> weightSpots = snapshot.data ?? [];
-                // todo: remove debugging
-                // print('========');
-                // for (FlSpot item in weightSpots) {
-                //   print(item.toString());
-                // }
                 return LineChart(
                   LineChartData(
                     borderData: FlBorderData(show: false),
