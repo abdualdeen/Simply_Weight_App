@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
+import 'package:weight_app/logging.dart';
 import 'package:weight_app/weight_model.dart';
 
 void main() {
@@ -55,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final appLog = appLogger;
   bool deleteWeight = false;
   int currentPageIndex = 0;
   late Future<List<Weight>> allWeights;
@@ -316,6 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   // todo: implement error logging
+                  appLog.d(snapshot.error);
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return snapshot.data ?? Container();
