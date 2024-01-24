@@ -336,8 +336,8 @@ class _MyHomePageState extends State<MyHomePage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
-                // todo: implement error logging
-                return Text('Error: ${snapshot.error}');
+                appLog.d(snapshot.error);
+                // todo: maybe display error for user too?
               } else {
                 List<FlSpot> weightSpots = snapshot.data ?? [];
                 return LineChart(
@@ -378,8 +378,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
-                // todo: implement error logging
-                return Text('Error: ${snapshot.error}');
+                appLog.d(snapshot.error);
               } else {
                 return snapshot.data ?? Container();
               }
