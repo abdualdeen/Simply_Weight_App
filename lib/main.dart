@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
+import 'package:weight_app/dialogs.dart';
 import 'package:weight_app/logging.dart';
 import 'package:weight_app/weight_model.dart';
 
@@ -86,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Text('Delete', style: TextStyle(color: Colors.red)),
                   onPressed: () async {
                     // todo: handle error? in case it doesn't delete.
-                    dbHelper.deleteWeight(weightId);
+                    await dbHelper.deleteWeight(weightId);
                     deleteWeight = true;
                     if (context.mounted) Navigator.pop(context);
                   }),
@@ -227,17 +228,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () async {
                     // todo: implement some input validation for weight
                     double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
-                    // save information to local database
-                    Weight newWeight = Weight.empty();
-                    newWeight.weight = newWeightValue;
-                    newWeight.dateTime = DateTime.now();
+                    if (newWeightValue <= 0) {
+                      // todo: add error dialog.
+                      displayErrorDialog(context, 'Invalid Input: $newWeightValue');
+                    } else {
+                      // save information to local database
+                      Weight newWeight = Weight.empty();
+                      newWeight.weight = newWeightValue;
+                      newWeight.dateTime = DateTime.now();
 
-                    await dbHelper.insertWeight(newWeight);
-                    _weightTextFieldController.clear();
+                      await dbHelper.insertWeight(newWeight);
+                      _weightTextFieldController.clear();
 
-                    // invoke this function to update the homepage and latest weight.
-                    setState(() {});
-                    if (context.mounted) Navigator.pop(context);
+                      // invoke this function to update the homepage and latest weight.
+                      setState(() {});
+                      if (context.mounted) Navigator.pop(context);
+                    }
                   })
             ],
           );
@@ -337,6 +343,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 appLog.d(snapshot.error);
+                return Text('Error: ${snapshot.error}');
                 // todo: maybe display error for user too?
               } else {
                 List<FlSpot> weightSpots = snapshot.data ?? [];
@@ -379,6 +386,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 appLog.d(snapshot.error);
+                return Text('Error: ${snapshot.error}');
               } else {
                 return snapshot.data ?? Container();
               }
