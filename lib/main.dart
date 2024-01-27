@@ -142,18 +142,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () async {
                         // todo: implement some input validation for weight
                         double editedWeightValue = double.tryParse(weightEditTextController.text) ?? 0.0;
+                        if (editedWeightValue <= 0) {
+                          displayErrorDialog(context, 'Invalid Input: $editedWeightValue');
+                        } else {
+                          // save information to local database
+                          Weight editedWeight = Weight.empty();
+                          editedWeight.id = weight.id;
+                          editedWeight.weight = editedWeightValue;
+                          editedWeight.dateTime = weight.dateTime;
+                          await dbHelper.updateWeight(editedWeight);
 
-                        // save information to local database
-                        Weight editedWeight = Weight.empty();
-                        editedWeight.id = weight.id;
-                        editedWeight.weight = editedWeightValue;
-                        editedWeight.dateTime = weight.dateTime;
-                        await dbHelper.updateWeight(editedWeight);
-
-                        weightEditTextController.clear();
-                        if (context.mounted) Navigator.pop(context);
-                        // // invoke this function to update the homepage and latest weight.
-                        setState(() {});
+                          weightEditTextController.clear();
+                          setState(() {}); // invoke this function to update the homepage and latest weight.
+                          if (context.mounted) Navigator.pop(context);
+                        }
                       }),
                 ],
               )
@@ -240,8 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       await dbHelper.insertWeight(newWeight);
                       _weightTextFieldController.clear();
 
-                      // invoke this function to update the homepage and latest weight.
-                      setState(() {});
+                      setState(() {}); // invoke this function to update the homepage and latest weight.
                       if (context.mounted) Navigator.pop(context);
                     }
                   })
