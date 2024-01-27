@@ -5,6 +5,7 @@ import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/dialogs.dart';
 import 'package:weight_app/logging.dart';
+import 'package:weight_app/themes.dart';
 import 'package:weight_app/weight_model.dart';
 
 void main() {
@@ -17,27 +18,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    ThemeData lightTheme = ThemeData(
-      appBarTheme: const AppBarTheme(
-        color: Colors.green,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.green,
-        brightness: Brightness.light,
-      ),
-    );
-
-    ThemeData darkTheme = ThemeData(
-      appBarTheme: const AppBarTheme(
-        color: Colors.green,
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.green,
-        brightness: Brightness.dark,
-      ),
-    );
     return MaterialApp(
       title: 'Simple Weight Tracking',
       theme: lightTheme,
