@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  Future<dynamic> getHistoryListView() async {
+  Future<dynamic> getHistoryPage() async {
     List<Weight> allWeights = await dbHelper.getAllWeights();
     if (allWeights.isEmpty) {
       return const Text('No recorded weights yet.');
@@ -191,6 +191,38 @@ class _MyHomePageState extends State<MyHomePage> {
           style: Theme.of(context).textTheme.headlineMedium, // todo: check buildcontext async gaps issue
         )
       ],
+    );
+  }
+
+  Future<dynamic> getChartsPage() async {
+    List<FlSpot> weightSpots = await getWeightSpots();
+    if (weightSpots.isEmpty) {
+      return const Text('No recorded data yet.');
+    }
+    return LineChart(
+      LineChartData(
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              // dealing with how the date axis should be displayed.
+              getTitlesWidget: (value, meta) {
+                Widget text;
+                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                // Format DateTime to "MM/dd" string to display on chart
+                text = Text("${dateTime.month}/${dateTime.day}");
+                return SideTitleWidget(axisSide: meta.axisSide, child: text);
+              },
+            ),
+          ),
+        ),
+        lineBarsData: [
+          LineChartBarData(spots: weightSpots),
+        ],
+      ),
     );
   }
 
@@ -322,41 +354,16 @@ class _MyHomePageState extends State<MyHomePage> {
         // charts page
         Card(
           margin: const EdgeInsets.all(8.0),
-          child: FutureBuilder<List<FlSpot>>(
-            future: getWeightSpots(),
-            builder: (context, snapshot) {
+          child: FutureBuilder<dynamic>(
+            future: getChartsPage(),
+            builder: (context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 appLog.d(snapshot.error);
                 return Text('Error: ${snapshot.error}');
               } else {
-                List<FlSpot> weightSpots = snapshot.data ?? [];
-                return LineChart(
-                  LineChartData(
-                    borderData: FlBorderData(show: false),
-                    titlesData: FlTitlesData(
-                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          // dealing with how the date axis should be displayed.
-                          getTitlesWidget: (value, meta) {
-                            Widget text;
-                            DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                            // Format DateTime to "MM/dd" string to display on chart
-                            text = Text("${dateTime.month}/${dateTime.day}");
-                            return SideTitleWidget(axisSide: meta.axisSide, child: text);
-                          },
-                        ),
-                      ),
-                    ),
-                    lineBarsData: [
-                      LineChartBarData(spots: weightSpots),
-                    ],
-                  ),
-                );
+                return snapshot.data ?? Container();
               }
             },
           ),
@@ -365,7 +372,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Card(
           margin: const EdgeInsets.all(8.0),
           child: FutureBuilder<dynamic>(
-            future: getHistoryListView(),
+            future: getHistoryPage(),
             builder: (context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
