@@ -164,8 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  Future<ListView> getHistoryListView() async {
+  Future<dynamic> getHistoryListView() async {
     List<Weight> allWeights = await dbHelper.getAllWeights();
+    if (allWeights.isEmpty) {
+      return const Text('No recorded weights yet.');
+    }
     DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
 
     // Create ListTile instances from Weight objects
@@ -191,8 +194,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return listView;
   }
 
-  Future<Column> getHomePage() async {
+  Future<dynamic> getHomePage() async {
     List<Weight> lastWeight = await dbHelper.getLastWeight();
+    if (lastWeight.isEmpty) {
+      return const Text('No recorded weight yet.');
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -318,13 +324,12 @@ class _MyHomePageState extends State<MyHomePage> {
         Card(
           margin: const EdgeInsets.all(8.0),
           child: SizedBox.expand(
-            child: FutureBuilder<Column>(
+            child: FutureBuilder<dynamic>(
               future: getHomePage(),
-              builder: (context, AsyncSnapshot<Column> snapshot) {
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
-                  // todo: implement error logging
                   appLog.d(snapshot.error);
                   return Text('Error: ${snapshot.error}');
                 } else {
@@ -345,7 +350,6 @@ class _MyHomePageState extends State<MyHomePage> {
               } else if (snapshot.hasError) {
                 appLog.d(snapshot.error);
                 return Text('Error: ${snapshot.error}');
-                // todo: maybe display error for user too?
               } else {
                 List<FlSpot> weightSpots = snapshot.data ?? [];
                 return LineChart(
@@ -380,9 +384,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // history page
         Card(
           margin: const EdgeInsets.all(8.0),
-          child: FutureBuilder<ListView>(
+          child: FutureBuilder<dynamic>(
             future: getHistoryListView(),
-            builder: (context, AsyncSnapshot<ListView> snapshot) {
+            builder: (context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
