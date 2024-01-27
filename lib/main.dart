@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<dynamic> getHistoryPage() async {
     List<Weight> allWeights = await dbHelper.getAllWeights();
     if (allWeights.isEmpty) {
-      return const Text('No recorded weights yet.');
+      return const Text('No recorded data yet.');
     }
     DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
 
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<dynamic> getHomePage() async {
     List<Weight> lastWeight = await dbHelper.getLastWeight();
     if (lastWeight.isEmpty) {
-      return const Text('No recorded weight yet.');
+      return const Text('No recorded data yet.');
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
