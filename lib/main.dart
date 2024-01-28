@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weight_app/calendar_selector.dart';
 import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/dialogs.dart';
@@ -199,30 +200,37 @@ class _MyHomePageState extends State<MyHomePage> {
     if (weightSpots.isEmpty) {
       return const Text('No recorded data yet.');
     }
-    return LineChart(
-      LineChartData(
-        borderData: FlBorderData(show: false),
-        titlesData: FlTitlesData(
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              // dealing with how the date axis should be displayed.
-              getTitlesWidget: (value, meta) {
-                Widget text;
-                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                // Format DateTime to "MM/dd" string to display on chart
-                text = Text("${dateTime.month}/${dateTime.day}");
-                return SideTitleWidget(axisSide: meta.axisSide, child: text);
-              },
+    return Column(
+      children: [
+        const CalendarSegementedButton(),
+        Expanded(
+          child: LineChart(
+            LineChartData(
+              borderData: FlBorderData(show: false),
+              titlesData: FlTitlesData(
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    // dealing with how the date axis should be displayed.
+                    getTitlesWidget: (value, meta) {
+                      Widget text;
+                      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                      // Format DateTime to "MM/dd" string to display on chart
+                      text = Text("${dateTime.month}/${dateTime.day}");
+                      return SideTitleWidget(axisSide: meta.axisSide, child: text);
+                    },
+                  ),
+                ),
+              ),
+              lineBarsData: [
+                LineChartBarData(spots: weightSpots),
+              ],
             ),
           ),
         ),
-        lineBarsData: [
-          LineChartBarData(spots: weightSpots),
-        ],
-      ),
+      ],
     );
   }
 
