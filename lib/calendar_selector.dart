@@ -16,9 +16,9 @@ class _CalendarSegementedButtonState extends State<CalendarSegementedButton> {
   Widget build(BuildContext context) {
     return SegmentedButton<Calendar>(
       segments: const <ButtonSegment<Calendar>>[
-        ButtonSegment(value: Calendar.week, label: Text('Week')),
-        ButtonSegment(value: Calendar.month, label: Text('Month')),
-        ButtonSegment(value: Calendar.year, label: Text('Year')),
+        ButtonSegment(value: Calendar.week, label: Text('1W')),
+        ButtonSegment(value: Calendar.month, label: Text('1M')),
+        ButtonSegment(value: Calendar.year, label: Text('1Y')),
         ButtonSegment(value: Calendar.all, label: Text('All'))
       ],
       selected: <Calendar>{_selectedCalendar},

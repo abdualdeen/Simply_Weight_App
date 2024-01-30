@@ -1,13 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weight_app/calendar_selector.dart';
 import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/dialogs.dart';
 import 'package:weight_app/logging.dart';
 import 'package:weight_app/themes.dart';
 import 'package:weight_app/weight_model.dart';
+
+import 'calendar_selector.dart';
 
 void main() {
   runApp(const MyApp());
@@ -200,37 +201,30 @@ class _MyHomePageState extends State<MyHomePage> {
     if (weightSpots.isEmpty) {
       return const Text('No recorded data yet.');
     }
-    return Column(
-      children: [
-        const CalendarSegementedButton(),
-        Expanded(
-          child: LineChart(
-            LineChartData(
-              borderData: FlBorderData(show: false),
-              titlesData: FlTitlesData(
-                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    // dealing with how the date axis should be displayed.
-                    getTitlesWidget: (value, meta) {
-                      Widget text;
-                      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                      // Format DateTime to "MM/dd" string to display on chart
-                      text = Text("${dateTime.month}/${dateTime.day}");
-                      return SideTitleWidget(axisSide: meta.axisSide, child: text);
-                    },
-                  ),
-                ),
-              ),
-              lineBarsData: [
-                LineChartBarData(spots: weightSpots),
-              ],
+    return LineChart(
+      LineChartData(
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              // dealing with how the date axis should be displayed.
+              getTitlesWidget: (value, meta) {
+                Widget text;
+                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                // Format DateTime to "MM/dd" string to display on chart
+                text = Text("${dateTime.month}/${dateTime.day}");
+                return SideTitleWidget(axisSide: meta.axisSide, child: text);
+              },
             ),
           ),
         ),
-      ],
+        lineBarsData: [
+          LineChartBarData(spots: weightSpots),
+        ],
+      ),
     );
   }
 
@@ -306,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
             currentPageIndex = index;
           });
         },
-        destinations: const <Widget>[
+        destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -339,7 +333,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: <Widget>[
+      body: [
         // home page
         Card(
           margin: const EdgeInsets.all(8.0),
@@ -362,18 +356,26 @@ class _MyHomePageState extends State<MyHomePage> {
         // charts page
         Card(
           margin: const EdgeInsets.all(8.0),
-          child: FutureBuilder<dynamic>(
-            future: getChartsPage(),
-            builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                appLog.d(snapshot.error);
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return snapshot.data ?? Container();
-              }
-            },
+          child: Column(
+            children: [
+              Container(width: double.infinity, child: const CalendarSegementedButton()),
+              const SizedBox(height: 15),
+              Expanded(
+                child: FutureBuilder<dynamic>(
+                  future: getChartsPage(),
+                  builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      appLog.d(snapshot.error);
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return snapshot.data ?? Container();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
         // history page
