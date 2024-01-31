@@ -206,6 +206,15 @@ class _MyHomePageState extends State<MyHomePage> {
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(
           rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                Widget text = Text(value.toInt().toString());
+                return SideTitleWidget(axisSide: meta.axisSide, child: text);
+              },
+            ),
+          ),
           topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
