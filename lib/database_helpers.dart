@@ -40,4 +40,17 @@ class DatabaseHelper {
     List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 1);
     return result.map((e) => Weight.fromMap(e)).toList();
   }
+
+  Future<void> fillDbForTesting() async {
+    Weight weight1 = Weight(id: 1, weight: 135.0, dateTime: DateTime.parse('2024-01-15 17:30:00'));
+    Weight weight2 = Weight(id: 2, weight: 136.0, dateTime: DateTime.parse('2024-01-16 17:30:00'));
+    Weight weight3 = Weight(id: 3, weight: 136.5, dateTime: DateTime.parse('2024-01-17 17:30:00'));
+    Weight weight4 = Weight(id: 4, weight: 136.0, dateTime: DateTime.parse('2024-01-18 17:30:00'));
+    Weight weight5 = Weight(id: 5, weight: 135.8, dateTime: DateTime.parse('2024-01-19 17:30:00'));
+
+    List<Weight> testData = [weight1, weight2, weight3, weight4, weight5];
+    for (final Weight x in testData) {
+      insertWeight(x);
+    }
+  }
 }

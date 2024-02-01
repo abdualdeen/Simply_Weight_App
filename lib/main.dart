@@ -259,10 +259,9 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialButton(
                   child: const Text('Save'),
                   onPressed: () async {
-                    // todo: implement some input validation for weight
+                    // todo: check if input validation is robust.
                     double newWeightValue = double.tryParse(_weightTextFieldController.text) ?? 0.0;
                     if (newWeightValue <= 0) {
-                      // todo: add error dialog.
                       displayErrorDialog(context, 'Invalid Input: $newWeightValue');
                     } else {
                       // save information to local database
@@ -412,6 +411,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
         onPressed: () {
           _displayAddWeightDialog(context);
+          // dbHelper.fillDbForTesting();
         },
       ),
     );
