@@ -41,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final appLog = appLogger;
   bool deleteWeight = false;
-  int currentPageIndex = 0;
+  int _currentPageIndex = 0;
   late Future<List<Weight>> allWeights;
   DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
@@ -221,6 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
+              reservedSize: 35,
               // dealing with how the date axis should be displayed.
               getTitlesWidget: (value, meta) {
                 Widget text;
@@ -304,10 +305,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         labelBehavior: labelBehavior,
-        selectedIndex: currentPageIndex,
+        selectedIndex: _currentPageIndex,
         onDestinationSelected: (int index) {
           setState(() {
-            currentPageIndex = index;
+            _currentPageIndex = index;
           });
         },
         destinations: const [
@@ -405,15 +406,17 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ),
-      ][currentPageIndex],
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add',
-        child: const Icon(Icons.add),
-        onPressed: () {
-          _displayAddWeightDialog(context);
-          // dbHelper.fillDbForTesting();
-        },
-      ),
+      ][_currentPageIndex],
+      floatingActionButton: _currentPageIndex != 1 // the use of _curerntPageIndex here in the ternary is to hide the button on the chart page.
+          ? FloatingActionButton(
+              tooltip: 'Add',
+              child: const Icon(Icons.add),
+              onPressed: () {
+                _displayAddWeightDialog(context);
+                // dbHelper.fillDbForTesting();
+              },
+            )
+          : null,
     );
   }
 }
