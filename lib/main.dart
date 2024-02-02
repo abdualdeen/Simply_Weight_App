@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
-import 'package:weight_app/dialogs.dart';
 import 'package:weight_app/logging.dart';
 import 'package:weight_app/themes.dart';
 import 'package:weight_app/weight_model.dart';
+import 'package:weight_app/widgets/dialogs.dart';
 
-import 'calendar_selector.dart';
+import 'widgets/calendar_selector.dart';
 
 void main() {
   runApp(const MyApp());
@@ -369,6 +369,7 @@ class _MyHomePageState extends State<MyHomePage> {
           margin: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              // todo: realized that the segemented buttons should be a part of the chartspage function. move it later.
               Container(width: double.infinity, child: const CalendarSegementedButton()),
               const SizedBox(height: 15),
               Expanded(
