@@ -1,2 +1,2 @@
-# weight-app
-a simple app that tracks your weight
+# Simple Weight Tracking
+A simple app that tracks your weight.
