@@ -42,6 +42,24 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
+  Future<List<Weight>> getLastWeekWeights() async {
+    final Database db = await initializeDB();
+    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 7);
+    return result.map((e) => Weight.fromMap(e)).toList();
+  }
+
+  Future<List<Weight>> getLastMonthWeights() async {
+    final Database db = await initializeDB();
+    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 30);
+    return result.map((e) => Weight.fromMap(e)).toList();
+  }
+
+  Future<List<Weight>> getLastYearWeights() async {
+    final Database db = await initializeDB();
+    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 365);
+    return result.map((e) => Weight.fromMap(e)).toList();
+  }
+
   Future<void> fillDbForTesting() async {
     List<Weight> testData = [
       weight1,
