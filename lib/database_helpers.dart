@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:weight_app/testing_data.dart';
 import 'package:weight_app/weight_model.dart';
 
 class DatabaseHelper {
@@ -42,13 +43,29 @@ class DatabaseHelper {
   }
 
   Future<void> fillDbForTesting() async {
-    Weight weight1 = Weight(id: 1, weight: 135.0, dateTime: DateTime.parse('2024-01-15 17:30:00'));
-    Weight weight2 = Weight(id: 2, weight: 136.0, dateTime: DateTime.parse('2024-01-16 17:30:00'));
-    Weight weight3 = Weight(id: 3, weight: 136.5, dateTime: DateTime.parse('2024-01-17 17:30:00'));
-    Weight weight4 = Weight(id: 4, weight: 136.0, dateTime: DateTime.parse('2024-01-18 17:30:00'));
-    Weight weight5 = Weight(id: 5, weight: 135.8, dateTime: DateTime.parse('2024-01-19 17:30:00'));
-
-    List<Weight> testData = [weight1, weight2, weight3, weight4, weight5];
+    List<Weight> testData = [
+      weight1,
+      weight2,
+      weight3,
+      weight4,
+      weight5,
+      weight6,
+      weight7,
+      weight8,
+      weight9,
+      weight10,
+      weight11,
+      weight12,
+      weight13,
+      weight14,
+      weight15,
+      weight16,
+      weight17,
+      weight18,
+      weight19,
+      weight20,
+      weight21
+    ];
     for (final Weight x in testData) {
       insertWeight(x);
     }
