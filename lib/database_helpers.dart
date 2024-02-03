@@ -42,6 +42,8 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
+  // todo: rewrite these functions to get the ALL the data for the past 7 days rather than assuming and getting the last 7 entries.
+  // todo: the 7 last entries don't gurantee 7 days as a person can have multiple data entries a day for example.
   Future<List<Weight>> getLastWeekWeights() async {
     final Database db = await initializeDB();
     List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 7);
@@ -60,7 +62,19 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
+  Future<void> deleteTable() async {
+    final Database db = await initializeDB();
+    db.delete('weights');
+  }
+
+  Future<void> createTable() async {
+    final Database db = await initializeDB();
+    db.execute("CREATE TABLE weights (id INTEGER PRIMARY KEY AUTOINCREMENT, weight DOUBLE NOT NULL, dateTime DATETIME NOT NULL)");
+  }
+
   Future<void> fillDbForTesting() async {
+    await deleteTable();
+    await createTable();
     List<Weight> testData = [
       weight1,
       weight2,
