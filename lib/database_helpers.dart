@@ -53,13 +53,15 @@ class DatabaseHelper {
 
   Future<List<Weight>> getLastMonthWeights() async {
     final Database db = await initializeDB();
-    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 30);
+    List<Map<String, dynamic>> result =
+        await db.rawQuery("select * from weights where dateTime between datetime('now', 'start of month') and datetime('now' , 'localtime');");
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
   Future<List<Weight>> getLastYearWeights() async {
     final Database db = await initializeDB();
-    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 365);
+    List<Map<String, dynamic>> result =
+        await db.rawQuery("select * from weights where dateTime between datetime('now', 'start of year') and datetime('now' , 'localtime');");
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
