@@ -46,7 +46,8 @@ class DatabaseHelper {
   // todo: the 7 last entries don't gurantee 7 days as a person can have multiple data entries a day for example.
   Future<List<Weight>> getLastWeekWeights() async {
     final Database db = await initializeDB();
-    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 7);
+    List<Map<String, dynamic>> result =
+        await db.rawQuery("select * from weights where dateTime between datetime('now', '-6 days') and datetime('now' , 'localtime');");
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 

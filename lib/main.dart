@@ -48,7 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _weightTextFieldController = TextEditingController();
 
   Future<List<FlSpot>> getWeightSpots() async {
-    List<Weight> allWeights = await dbHelper.getAllWeights();
+    // todo: switch this back to getAllWeights once your done testing.
+    List<Weight> allWeights = await dbHelper.getLastWeekWeights();
 
     // Create FlSpot instances from Weight objects
     List<FlSpot> spots = allWeights.map((weight) {
@@ -147,7 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<dynamic> getHistoryPage() async {
-    List<Weight> allWeights = await dbHelper.getAllWeights();
+    // todo: switch this back to getAllWeights once your done testing.
+    List<Weight> allWeights = await dbHelper.getLastWeekWeights();
     if (allWeights.isEmpty) {
       return const Center(child: Text('No recorded data yet.'));
     }
