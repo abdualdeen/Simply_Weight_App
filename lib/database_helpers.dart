@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:weight_app/testing_data.dart';
@@ -42,13 +43,16 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
-  // todo: rewrite these functions to get the ALL the data for the past 7 days rather than assuming and getting the last 7 entries.
-  // todo: the 7 last entries don't gurantee 7 days as a person can have multiple data entries a day for example.
   Future<List<Weight>> getLastWeekWeights() async {
     final Database db = await initializeDB();
     List<Map<String, dynamic>> result =
         await db.rawQuery("select * from weights where dateTime between datetime('now', '-6 days') and datetime('now' , 'localtime');");
     return result.map((e) => Weight.fromMap(e)).toList();
+  }
+
+  // the purpose of this function is to make it so that there is average for days
+  Future<List<Weight>> prepareWeightList(List<Weight> weightList) async {
+    Map<dynamic, List<Weight>> preparedWeightList = groupBy(weightList, (Map obj) => obj['dateTime']);
   }
 
   Future<List<Weight>> getLastMonthWeights() async {
