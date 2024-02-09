@@ -416,7 +416,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.add),
               onPressed: () {
                 _displayAddWeightDialog(context);
-                dbHelper.fillDbForTesting();
+                // dbHelper.fillDbForTesting();
+                dbHelper.prepareWeightList(dbHelper.getLastWeekWeights());
               },
             )
           : null,

@@ -1,4 +1,5 @@
 import "package:collection/collection.dart";
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:weight_app/testing_data.dart';
@@ -50,9 +51,14 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
-  // the purpose of this function is to make it so that there is average for days
-  Future<List<Weight>> prepareWeightList(List<Weight> weightList) async {
-    Map<dynamic, List<Weight>> preparedWeightList = groupBy(weightList, (Map obj) => obj['dateTime']);
+  // the purpose of this function is to make it so that there is an average weight for days where there is multiple entries.
+  Future<void> prepareWeightList(weightList) async {
+    // todo: add type for weightlist
+    // Map<dynamic, List<Weight>>
+    Map<dynamic, List<Weight>> groupedWeightList = groupBy(weightList, (Weight obj) => DateFormat('yMd').format(obj.dateTime));
+    for (int i = 0; i < groupedWeightList.length; i++) {
+      print(groupedWeightList[i]);
+    }
   }
 
   Future<List<Weight>> getLastMonthWeights() async {
