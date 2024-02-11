@@ -417,7 +417,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 _displayAddWeightDialog(context);
                 // dbHelper.fillDbForTesting();
-                dbHelper.prepareWeightList(dbHelper.getLastWeekWeights());
+                dbHelper.calculateWeightAverages(dbHelper.getLastWeekWeights());
               },
             )
           : null,
