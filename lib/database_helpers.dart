@@ -43,13 +43,6 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
-  Future<List<Weight>> getLastWeekWeights() async {
-    final Database db = await initializeDB();
-    List<Map<String, dynamic>> result =
-        await db.rawQuery("select * from weights where dateTime between datetime('now', '-6 days') and datetime('now' , 'localtime');");
-    return result.map((e) => Weight.fromMap(e)).toList();
-  }
-
   // the purpose of this function is to make it so that there is an average weight for days where there is multiple entries.
   // todo: this should probably be in a different file, but i'll leave it here for now.
   List<Weight> calculateWeightAverages(List<Weight> weights) {
@@ -75,10 +68,17 @@ class DatabaseHelper {
       // id is set to zero as it's irrevelant for this use case.
       Weight averageWeight = Weight(id: 0, weight: average, dateTime: DateFormat('yyyy-MM-dd').parse(date));
       averages.add(averageWeight);
-      print(averageWeight);
+      //print("${averageWeight.dateTime.toString()}, ${averageWeight.weight}"); // todo: remove
     });
 
     return averages;
+  }
+
+  Future<List<Weight>> getLastWeekWeights() async {
+    final Database db = await initializeDB();
+    List<Map<String, dynamic>> result =
+        await db.rawQuery("select * from weights where dateTime between datetime('now', '-6 days') and datetime('now' , 'localtime');");
+    return result.map((e) => Weight.fromMap(e)).toList();
   }
 
   Future<List<Weight>> getLastMonthWeights() async {

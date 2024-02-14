@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(color: Colors.green),
                       ),
                       onPressed: () async {
-                        // todo: implement some input validation for weight
+                        // todo: maybe add more input validation
                         double editedWeightValue = double.tryParse(weightEditTextController.text) ?? 0.0;
                         if (editedWeightValue <= 0) {
                           displayErrorDialog(context, 'Invalid Input: $editedWeightValue');
@@ -416,8 +416,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.add),
               onPressed: () {
                 _displayAddWeightDialog(context);
+                // todo: clean
                 // dbHelper.fillDbForTesting();
-                dbHelper.calculateWeightAverages(dbHelper.getLastWeekWeights());
+                // dbHelper.getLastWeekWeights();
               },
             )
           : null,
