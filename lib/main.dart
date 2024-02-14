@@ -203,42 +203,50 @@ class _MyHomePageState extends State<MyHomePage> {
     if (weightSpots.isEmpty) {
       return const Center(child: Text('No recorded data yet.'));
     }
-    return LineChart(
-      LineChartData(
-        borderData: FlBorderData(show: false),
-        titlesData: FlTitlesData(
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              interval: 2,
-              reservedSize: 40,
-              getTitlesWidget: (value, meta) {
-                Widget text = Text(value.toInt().toString());
-                return SideTitleWidget(axisSide: meta.axisSide, child: text);
-              },
-            ),
-          ),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 35,
-              // dealing with how the date axis should be displayed.
-              getTitlesWidget: (value, meta) {
-                Widget text;
-                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                // Format DateTime to "MM/dd" string to display on chart
-                text = Text("${dateTime.month}/${dateTime.day}");
-                return SideTitleWidget(axisSide: meta.axisSide, child: text);
-              },
+    return Column(
+      children: [
+        Container(width: double.infinity, child: const CalendarSegementedButton()),
+        const SizedBox(height: 15),
+        Expanded(
+          child: LineChart(
+            LineChartData(
+              borderData: FlBorderData(show: false),
+              titlesData: FlTitlesData(
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    interval: 2,
+                    reservedSize: 40,
+                    getTitlesWidget: (value, meta) {
+                      Widget text = Text(value.toInt().toString());
+                      return SideTitleWidget(axisSide: meta.axisSide, child: text);
+                    },
+                  ),
+                ),
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 35,
+                    // dealing with how the date axis should be displayed.
+                    getTitlesWidget: (value, meta) {
+                      Widget text;
+                      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                      // Format DateTime to "MM/dd" string to display on chart
+                      text = Text("${dateTime.month}/${dateTime.day}");
+                      return SideTitleWidget(axisSide: meta.axisSide, child: text);
+                    },
+                  ),
+                ),
+              ),
+              lineBarsData: [
+                LineChartBarData(spots: weightSpots),
+              ],
             ),
           ),
         ),
-        lineBarsData: [
-          LineChartBarData(spots: weightSpots),
-        ],
-      ),
+      ],
     );
   }
 
@@ -369,27 +377,20 @@ class _MyHomePageState extends State<MyHomePage> {
         // charts page
         Card(
           margin: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              // todo: realized that the segemented buttons should be a part of the chartspage function. move it later.
-              Container(width: double.infinity, child: const CalendarSegementedButton()),
-              const SizedBox(height: 15),
-              Expanded(
-                child: FutureBuilder<dynamic>(
-                  future: getChartsPage(),
-                  builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      appLog.d(snapshot.error);
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return snapshot.data ?? Container();
-                    }
-                  },
-                ),
-              ),
-            ],
+          child: SizedBox.expand(
+            child: FutureBuilder<dynamic>(
+              future: getChartsPage(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  appLog.d(snapshot.error);
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return snapshot.data ?? Container();
+                }
+              },
+            ),
           ),
         ),
         // history page
