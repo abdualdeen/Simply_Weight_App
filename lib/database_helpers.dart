@@ -21,12 +21,6 @@ class DatabaseHelper {
     return await db.insert('weights', weight.toMap());
   }
 
-  Future<List<Weight>> getAllWeights() async {
-    final Database db = await initializeDB();
-    List<Map<String, dynamic>> result = await db.query('weights');
-    return result.map((e) => Weight.fromMap(e)).toList();
-  }
-
   Future<void> deleteWeight(int id) async {
     final Database db = await initializeDB();
     db.delete('weights', where: 'id= ?', whereArgs: [id]);
@@ -37,10 +31,15 @@ class DatabaseHelper {
     await db.update('weights', weight.toMap(), where: 'id= ?', whereArgs: [weight.id]);
   }
 
-  Future<List<Weight>> getLastWeight() async {
+  // these two functions below are used for testing purposes.
+  Future<void> deleteTable() async {
     final Database db = await initializeDB();
-    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 1);
-    return result.map((e) => Weight.fromMap(e)).toList();
+    db.delete('weights');
+  }
+
+  Future<void> createTable() async {
+    final Database db = await initializeDB();
+    db.execute("CREATE TABLE weights (id INTEGER PRIMARY KEY AUTOINCREMENT, weight DOUBLE NOT NULL, dateTime DATETIME NOT NULL)");
   }
 
   // the purpose of this function is to make it so that there is an average weight for days where there is multiple entries.
@@ -95,14 +94,16 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
-  Future<void> deleteTable() async {
+  Future<List<Weight>> getAllWeights() async {
     final Database db = await initializeDB();
-    db.delete('weights');
+    List<Map<String, dynamic>> result = await db.query('weights');
+    return result.map((e) => Weight.fromMap(e)).toList();
   }
 
-  Future<void> createTable() async {
+  Future<List<Weight>> getLastWeight() async {
     final Database db = await initializeDB();
-    db.execute("CREATE TABLE weights (id INTEGER PRIMARY KEY AUTOINCREMENT, weight DOUBLE NOT NULL, dateTime DATETIME NOT NULL)");
+    List<Map<String, dynamic>> result = await db.query('weights', orderBy: 'id DESC', limit: 1);
+    return result.map((e) => Weight.fromMap(e)).toList();
   }
 
   Future<void> fillDbForTesting() async {
