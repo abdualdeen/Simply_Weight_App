@@ -7,6 +7,7 @@ import 'package:weight_app/logging.dart';
 import 'package:weight_app/themes.dart';
 import 'package:weight_app/weight_model.dart';
 import 'package:weight_app/widgets/dialogs.dart';
+import 'package:weight_app/widgets/line_chart.dart';
 
 import 'widgets/calendar_selector.dart';
 
@@ -49,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<List<FlSpot>> getWeightSpots() async {
     // todo: switch this back to getAllWeights once your done testing.
-    List<Weight> allWeights = await dbHelper.getLastWeekWeights();
+    List<Weight> allWeights = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
 
     // Create FlSpot instances from Weight objects
     List<FlSpot> spots = allWeights.map((weight) {
@@ -148,8 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<dynamic> getHistoryPage() async {
-    // todo: switch this back to getAllWeights once your done testing.
-    List<Weight> allWeights = await dbHelper.getLastWeekWeights();
+    List<Weight> allWeights = await dbHelper.getAllWeights();
     if (allWeights.isEmpty) {
       return const Center(child: Text('No recorded data yet.'));
     }
@@ -207,45 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Container(width: double.infinity, child: const CalendarSegementedButton()),
         const SizedBox(height: 15),
-        Expanded(
-          child: LineChart(
-            LineChartData(
-              borderData: FlBorderData(show: false),
-              titlesData: FlTitlesData(
-                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    interval: 2,
-                    reservedSize: 40,
-                    getTitlesWidget: (value, meta) {
-                      Widget text = Text(value.toInt().toString());
-                      return SideTitleWidget(axisSide: meta.axisSide, child: text);
-                    },
-                  ),
-                ),
-                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 35,
-                    // dealing with how the date axis should be displayed.
-                    getTitlesWidget: (value, meta) {
-                      Widget text;
-                      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                      // Format DateTime to "MM/dd" string to display on chart
-                      text = Text("${dateTime.month}/${dateTime.day}");
-                      return SideTitleWidget(axisSide: meta.axisSide, child: text);
-                    },
-                  ),
-                ),
-              ),
-              lineBarsData: [
-                LineChartBarData(spots: weightSpots),
-              ],
-            ),
-          ),
-        ),
+        Expanded(child: weightLineChart(weightSpots)),
       ],
     );
   }
