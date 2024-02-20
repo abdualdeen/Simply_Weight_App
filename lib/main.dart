@@ -1,4 +1,4 @@
-import 'package:fl_chart/fl_chart.dart';
+// import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/constants.dart';
@@ -48,17 +48,17 @@ class _MyHomePageState extends State<MyHomePage> {
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   final TextEditingController _weightTextFieldController = TextEditingController();
 
-  Future<List<FlSpot>> getWeightSpots() async {
-    // todo: switch this back to getAllWeights once your done testing.
-    List<Weight> allWeights = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
-
-    // Create FlSpot instances from Weight objects
-    List<FlSpot> spots = allWeights.map((weight) {
-      return FlSpot(weight.dateTime.millisecondsSinceEpoch.toDouble(), weight.weight);
-    }).toList();
-
-    return spots;
-  }
+  // Future<List<FlSpot>> getWeightSpots() async {
+  //   // todo: switch this back to getAllWeights once your done testing.
+  //   List<Weight> allWeights = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
+  //
+  //   // Create FlSpot instances from Weight objects
+  //   List<FlSpot> spots = allWeights.map((weight) {
+  //     return FlSpot(weight.dateTime.millisecondsSinceEpoch.toDouble(), weight.weight);
+  //   }).toList();
+  //
+  //   return spots;
+  // }
 
   Future<dynamic> _displayDeleteWeightDialog(BuildContext context, int weightId) async {
     return showDialog(
@@ -199,15 +199,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<dynamic> getChartsPage() async {
-    List<FlSpot> weightSpots = await getWeightSpots();
-    if (weightSpots.isEmpty) {
+    // todo: switch this later after testing
+    List<Weight> weightList = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
+    if (weightList.isEmpty) {
       return const Center(child: Text('No recorded data yet.'));
     }
     return Column(
       children: [
         Container(width: double.infinity, child: const CalendarSegementedButton()),
         const SizedBox(height: 15),
-        Expanded(child: weightLineChart(weightSpots)),
+        SizedBox(height: 500, child: weightLineChart(weightList)),
       ],
     );
   }

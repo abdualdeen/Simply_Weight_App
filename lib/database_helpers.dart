@@ -106,32 +106,42 @@ class DatabaseHelper {
     return result.map((e) => Weight.fromMap(e)).toList();
   }
 
+//   Future<void> fillDbForTesting() async {
+//     await deleteTable();
+//     await createTable();
+//     List<Weight> testData = [
+//       weight1,
+//       weight2,
+//       weight3,
+//       weight4,
+//       weight5,
+//       weight6,
+//       weight7,
+//       weight8,
+//       weight9,
+//       weight10,
+//       weight11,
+//       weight12,
+//       weight13,
+//       weight14,
+//       weight15,
+//       weight16,
+//       weight17,
+//       weight18,
+//       weight19,
+//       weight20,
+//       weight21
+//     ];
+//     for (final Weight x in testData) {
+//       insertWeight(x);
+//     }
+//   }
+// }
+
   Future<void> fillDbForTesting() async {
     await deleteTable();
     await createTable();
-    List<Weight> testData = [
-      weight1,
-      weight2,
-      weight3,
-      weight4,
-      weight5,
-      weight6,
-      weight7,
-      weight8,
-      weight9,
-      weight10,
-      weight11,
-      weight12,
-      weight13,
-      weight14,
-      weight15,
-      weight16,
-      weight17,
-      weight18,
-      weight19,
-      weight20,
-      weight21
-    ];
+    List<Weight> testData = generateTestData();
     for (final Weight x in testData) {
       insertWeight(x);
     }
