@@ -64,7 +64,7 @@ LineChart weightLineChart2(List<FlSpot> weightSpots) {
         ),
       ),
       lineBarsData: [
-        LineChartBarData(spots: weightSpots),
+        LineChartBarData(spots: weightSpots, belowBarData: BarAreaData(show: true)),
       ],
     ),
   );
