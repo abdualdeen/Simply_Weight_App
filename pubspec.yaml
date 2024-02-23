@@ -39,6 +39,7 @@ dependencies:
   intl: ^0.17.0
   logger: ^2.0.2+1
   d_chart: ^2.6.7
+  fl_chart: ^0.66.2
 
 dev_dependencies:
   flutter_test:
