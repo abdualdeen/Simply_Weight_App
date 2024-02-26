@@ -43,6 +43,7 @@ class DatabaseHelper {
   }
 
   // the purpose of this function is to make it so that there is an average weight for days where there is multiple entries.
+  // todo: this function only deals with the 7 days issue. need to sum and avg weight differently for different periods.
   // todo: this should probably be in a different file, but i'll leave it here for now.
   List<Weight> calculateWeightAverages(List<Weight> weights) {
     Map<String, List<double>> weightMap = {};

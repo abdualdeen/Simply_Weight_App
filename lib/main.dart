@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<List<FlSpot>> getWeightSpots() async {
     // todo: switch this back to getAllWeights once your done testing.
-    List<Weight> allWeights = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
+    List<Weight> allWeights = dbHelper.calculateWeightAverages(await dbHelper.getLastMonthWeights());
 
     // Create FlSpot instances from Weight objects
     List<FlSpot> spots = allWeights.map((weight) {
@@ -200,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<dynamic> getChartsPage() async {
-    // todo: switch this later after testing
+    // todo: implement this properly to where if there is no weight data, it will show no recorded data.
     List<Weight> weightList = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
     if (weightList.isEmpty) {
       return const Center(child: Text('No recorded data yet.'));
@@ -209,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Container(width: double.infinity, child: const CalendarSegementedButton()),
         const SizedBox(height: 15),
-        SizedBox(height: 500, child: weightLineChart2(await getWeightSpots())),
+        SizedBox(height: 500, child: weightLineChart(await getWeightSpots())),
       ],
     );
   }
