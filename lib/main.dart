@@ -1,16 +1,13 @@
-// import 'package:fl_chart/fl_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weight_app/charts_page.dart';
 import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/logging.dart';
 import 'package:weight_app/themes.dart';
 import 'package:weight_app/weight_model.dart';
 import 'package:weight_app/widgets/dialogs.dart';
-import 'package:weight_app/widgets/line_chart.dart';
-
-import 'widgets/calendar_selector.dart';
 
 void main() {
   runApp(const MyApp());
@@ -199,20 +196,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<dynamic> getChartsPage() async {
-    // todo: implement this properly to where if there is no weight data, it will show no recorded data.
-    List<Weight> weightList = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
-    if (weightList.isEmpty) {
-      return const Center(child: Text('No recorded data yet.'));
-    }
-    return Column(
-      children: [
-        Container(width: double.infinity, child: const CalendarSegementedButton()),
-        const SizedBox(height: 15),
-        SizedBox(height: 500, child: weightLineChart(await getWeightSpots())),
-      ],
-    );
-  }
+  // Future<dynamic> getChartsPage() async {
+  //   // todo: implement this properly to where if there is no weight data, it will show no recorded data.
+  //   List<Weight> weightList = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
+  //   if (weightList.isEmpty) {
+  //     return const Center(child: Text('No recorded data yet.'));
+  //   }
+  //   return Column(
+  //     children: [
+  //       Container(width: double.infinity, child: const CalendarSegementedButton()),
+  //       const SizedBox(height: 15),
+  //       SizedBox(height: 500, child: weightLineChart(await getWeightSpots())),
+  //     ],
+  //   );
+  // }
 
   Future<void> _displayAddWeightDialog(BuildContext context) async {
     return showDialog(
@@ -339,22 +336,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         // charts page
-        Card(
-          margin: const EdgeInsets.all(8.0),
+        const Card(
+          margin: EdgeInsets.all(8.0),
           child: SizedBox.expand(
-            child: FutureBuilder<dynamic>(
-              future: getChartsPage(),
-              builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  appLog.d(snapshot.error);
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return snapshot.data ?? Container();
-                }
-              },
-            ),
+            child: ChartsPage(),
           ),
         ),
         // history page
