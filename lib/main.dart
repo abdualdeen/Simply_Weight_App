@@ -196,21 +196,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // Future<dynamic> getChartsPage() async {
-  //   // todo: implement this properly to where if there is no weight data, it will show no recorded data.
-  //   List<Weight> weightList = dbHelper.calculateWeightAverages(await dbHelper.getLastWeekWeights());
-  //   if (weightList.isEmpty) {
-  //     return const Center(child: Text('No recorded data yet.'));
-  //   }
-  //   return Column(
-  //     children: [
-  //       Container(width: double.infinity, child: const CalendarSegementedButton()),
-  //       const SizedBox(height: 15),
-  //       SizedBox(height: 500, child: weightLineChart(await getWeightSpots())),
-  //     ],
-  //   );
-  // }
-
   Future<void> _displayAddWeightDialog(BuildContext context) async {
     return showDialog(
         context: context,

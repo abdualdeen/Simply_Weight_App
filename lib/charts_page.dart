@@ -14,11 +14,21 @@ class ChartsPage extends StatefulWidget {
 
 class _ChartsPageState extends State<ChartsPage> {
   Calendar _selectedCalendar = Calendar.week;
+
   DatabaseHelper dbHelper = DatabaseHelper();
 
   // this was done this way because I cannot pass in the weightlist into the linechart with `await` as you cannot use that inside the futurebuilder.
-  Future<dynamic> callLineChart() async {
-    List<Weight> weightList = await dbHelper.getLastMonthWeights();
+  Future<dynamic> callLineChart(Calendar _selectedCalendar) async {
+    List<Weight> weightList = [];
+    if (_selectedCalendar == Calendar.week) {
+      weightList = await dbHelper.getLastWeekWeights();
+    } else if (_selectedCalendar == Calendar.month) {
+      weightList = await dbHelper.getLastMonthWeights();
+    } else if (_selectedCalendar == Calendar.year) {
+      weightList = await dbHelper.getLastYearWeights();
+    } else {
+      weightList = await dbHelper.getAllWeights();
+    }
     return weightLineChart(weightList);
   }
 
@@ -47,7 +57,7 @@ class _ChartsPageState extends State<ChartsPage> {
         SizedBox(
           height: 500,
           child: FutureBuilder<dynamic>(
-            future: callLineChart(),
+            future: callLineChart(_selectedCalendar),
             builder: (context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
