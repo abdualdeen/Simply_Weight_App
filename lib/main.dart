@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/charts_page.dart';
@@ -45,18 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
   DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   final TextEditingController _weightTextFieldController = TextEditingController();
-
-  Future<List<FlSpot>> getWeightSpots() async {
-    // todo: switch this back to getAllWeights once your done testing.
-    List<Weight> allWeights = dbHelper.calculateWeightAverages(await dbHelper.getLastMonthWeights());
-
-    // Create FlSpot instances from Weight objects
-    List<FlSpot> spots = allWeights.map((weight) {
-      return FlSpot(weight.dateTime.millisecondsSinceEpoch.toDouble(), weight.weight);
-    }).toList();
-
-    return spots;
-  }
 
   Future<dynamic> _displayDeleteWeightDialog(BuildContext context, int weightId) async {
     return showDialog(

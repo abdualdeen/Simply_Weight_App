@@ -2,9 +2,6 @@ import 'dart:math';
 
 import 'package:weight_app/weight_model.dart';
 
-const String START_DATE = '2023-01-01 00:00:00';
-const String END_DATE = '2024-02-02 00:00:00';
-
 List<Weight> generateTestData() {
   DateTime nowDateTime = DateTime.now();
 
