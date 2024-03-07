@@ -5,9 +5,7 @@ import 'package:weight_app/weight_model.dart';
 import 'package:weight_app/widgets/line_chart.dart';
 
 // the purpose of this function is to make it so that there is an average weight for days where there is multiple entries.
-// todo: this function only deals with the 7 days issue. need to sum and avg weight differently for different periods.
-// todo: this should probably be in a different file, but i'll leave it here for now.
-List<Weight> calculateWeightAverages(List<Weight> weights) {
+List<Weight> calculateDailyAverageWeight(List<Weight> weights) {
   Map<String, List<double>> weightMap = {};
 
   // group weigths with similar date together.
@@ -22,7 +20,6 @@ List<Weight> calculateWeightAverages(List<Weight> weights) {
       weightMap[formattedDate] = [weight.weight];
     }
   }
-
   // Calculate the average weight for each date.
   List<Weight> averages = [];
   weightMap.forEach((date, weights) {
@@ -32,8 +29,34 @@ List<Weight> calculateWeightAverages(List<Weight> weights) {
     averages.add(averageWeight);
     //print("${averageWeight.dateTime.toString()}, ${averageWeight.weight}"); // todo: remove
   });
-
   return averages;
+}
+
+List<Weight> prepareMonthlyWeights(List<Weight> weights) {
+  List<Weight> normalizedWeights = calculateDailyAverageWeight(weights);
+
+  // treat it like displaying the week case.
+  if (normalizedWeights.length < 7) {
+    return normalizedWeights;
+  }
+
+  DateTime startDate = normalizedWeights[0].dateTime;
+
+  int counter = 0;
+  double sum = 0;
+  List<Weight> preparedWeights = [];
+  for (int i = 0; i < normalizedWeights.length; i++) {
+    sum += normalizedWeights[i].weight;
+    counter++;
+
+    if (normalizedWeights[i].dateTime.difference(startDate).inDays >= 5 || i == preparedWeights.length - 1) {
+      preparedWeights.add(Weight(id: 0, weight: sum / counter, dateTime: normalizedWeights[i].dateTime));
+      sum = 0;
+      counter = 0;
+    }
+  }
+
+  return preparedWeights;
 }
 
 enum Calendar { week, month, year, all }
