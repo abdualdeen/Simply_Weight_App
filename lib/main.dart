@@ -184,15 +184,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _displayAddWeightDialog(BuildContext context) async {
+    DateTime dateTime = DateTime.now();
+    DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Add weight'),
-            content: TextField(
-              controller: _weightTextFieldController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(hintText: 'Weight'),
+            content: IntrinsicHeight(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _weightTextFieldController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Weight'),
+                  ),
+                  SizedBox(height: 5),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.edit_calendar),
+                    label: Text(dateFormat.format(dateTime)),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
             ),
             actions: [
               MaterialButton(
@@ -339,7 +353,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 _displayAddWeightDialog(context);
                 // todo: clean
-                dbHelper.fillDbForTesting();
+                // dbHelper.fillDbForTesting();
               },
             )
           : null,
