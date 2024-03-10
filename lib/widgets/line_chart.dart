@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../weight_model.dart';
 
-Future<List<FlSpot>> getWeightSpots(List<Weight> weightList) async {
+List<FlSpot> getWeightSpots(List<Weight> weightList) {
   // Create FlSpot instances from Weight objects
   List<FlSpot> spots = weightList.map((weight) {
     return FlSpot(weight.dateTime.millisecondsSinceEpoch.toDouble(), weight.weight);
@@ -16,7 +16,7 @@ Future<dynamic> weightLineChart(List<Weight> weightList) async {
   if (weightList.isEmpty) {
     return const Center(child: Text('No recorded data yet.'));
   }
-  List<FlSpot> weightSpots = await getWeightSpots(weightList);
+  List<FlSpot> weightSpots = getWeightSpots(weightList);
   return LineChart(
     LineChartData(
       borderData: FlBorderData(show: false),
