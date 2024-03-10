@@ -11,7 +11,7 @@ List<Weight> generateTestData() {
 
   // Generate test data for each day in the week before endDate
   for (DateTime date = nowDateTime.subtract(const Duration(days: 400)); date.isBefore(nowDateTime); date = date.add(const Duration(days: 1))) {
-    double weight = double.parse((100 + _random.nextDouble() * 80).toStringAsFixed(2)); // Generate weight between 100 and 180
+    double weight = double.parse((130 + _random.nextDouble() * (145 - 130)).toStringAsFixed(2)); // Generate weight between 130 and 145
     Weight dataPoint = Weight(id: _random.nextInt(500), weight: weight, dateTime: date);
     testData.add(dataPoint);
   }

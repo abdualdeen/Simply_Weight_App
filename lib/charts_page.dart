@@ -8,7 +8,7 @@ import 'package:weight_app/widgets/line_chart.dart';
 List<Weight> calculateDailyAverageWeight(List<Weight> weights) {
   Map<String, List<double>> weightMap = {};
 
-  // group weigths with similar date together.
+  // group weights with similar date together.
   for (Weight weight in weights) {
     String formattedDate = DateFormat('yyyy-MM-dd').format(weight.dateTime);
     // Check if the date exists in the map
@@ -24,7 +24,7 @@ List<Weight> calculateDailyAverageWeight(List<Weight> weights) {
   List<Weight> averages = [];
   weightMap.forEach((date, weights) {
     double average = weights.reduce((value, element) => value + element) / weights.length;
-    // id is set to zero as it's irrevelant for this use case.
+    // id is set to zero as it's irrelevant for this use case.
     Weight averageWeight = Weight(id: 0, weight: average, dateTime: DateFormat('yyyy-MM-dd').parse(date));
     averages.add(averageWeight);
     //print("${averageWeight.dateTime.toString()}, ${averageWeight.weight}"); // todo: remove
@@ -33,6 +33,7 @@ List<Weight> calculateDailyAverageWeight(List<Weight> weights) {
 }
 
 List<Weight> prepareMonthlyWeights(List<Weight> weights) {
+  // "normalize" the weights so that there is one point per day.
   List<Weight> normalizedWeights = calculateDailyAverageWeight(weights);
 
   // treat it like displaying the week case.
@@ -40,19 +41,26 @@ List<Weight> prepareMonthlyWeights(List<Weight> weights) {
     return normalizedWeights;
   }
 
-  DateTime startDate = normalizedWeights[0].dateTime;
-
+  DateTime? startDate = normalizedWeights[0].dateTime;
   int counter = 0;
   double sum = 0;
   List<Weight> preparedWeights = [];
+
   for (int i = 0; i < normalizedWeights.length; i++) {
+    // check if startDate is null and if it is assign the current date in the loop.
+    startDate ??= normalizedWeights[i].dateTime;
+
     sum += normalizedWeights[i].weight;
     counter++;
 
-    if (normalizedWeights[i].dateTime.difference(startDate).inDays >= 5 || i == preparedWeights.length - 1) {
-      preparedWeights.add(Weight(id: 0, weight: sum / counter, dateTime: normalizedWeights[i].dateTime));
+    // average and add the weight to the list if we've gone through 4 days or it's the end of the list.
+    if (i == preparedWeights.length - 1 || normalizedWeights[i].dateTime.difference(startDate).inDays >= 4) {
+      double averagedWeight = double.parse((sum / counter).toStringAsFixed(2));
+      preparedWeights.add(Weight(id: 0, weight: averagedWeight, dateTime: normalizedWeights[i].dateTime));
+      // reset counter for next averaging.
       sum = 0;
       counter = 0;
+      startDate = null;
     }
   }
 
@@ -78,7 +86,7 @@ class _ChartsPageState extends State<ChartsPage> {
     if (selectedCalendar == Calendar.week) {
       weightList = await dbHelper.getLastWeekWeights();
     } else if (selectedCalendar == Calendar.month) {
-      weightList = await dbHelper.getLastMonthWeights();
+      weightList = prepareMonthlyWeights(await dbHelper.getLastMonthWeights());
     } else if (selectedCalendar == Calendar.year) {
       weightList = await dbHelper.getLastYearWeights();
     } else {
