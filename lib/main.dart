@@ -6,6 +6,7 @@ import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/logging.dart';
 import 'package:weight_app/themes.dart';
 import 'package:weight_app/weight_model.dart';
+import 'package:weight_app/widgets/date_time_picker.dart';
 import 'package:weight_app/widgets/dialogs.dart';
 
 void main() {
@@ -44,6 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
   DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   final TextEditingController _weightTextFieldController = TextEditingController();
+  DateTime selectedDateTime = DateTime.now();
+  DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
 
   Future<dynamic> _displayDeleteWeightDialog(BuildContext context, int weightId) async {
     return showDialog(
@@ -183,9 +186,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<DateTime?> pickDateTime(DateTime dateTime) async {
+    DateTime? date = await showDatePicker(context: context, initialDate: dateTime, firstDate: DateTime(1900), lastDate: DateTime(2100));
+    // if no date is selected, return the passed in dateTime.
+    if (date == null) return dateTime;
+    TimeOfDay? time = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(dateTime));
+    // if no time is selected then just return the date picked and the time from the passed in dateTime.
+    if (time == null) return DateTime(date.year, date.month, date.day, dateTime.hour, dateTime.minute);
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  }
+
   Future<void> _displayAddWeightDialog(BuildContext context) async {
-    DateTime dateTime = DateTime.now();
-    DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
+    DateTime selectedDateTime = DateTime.now();
+
     return showDialog(
         context: context,
         builder: (context) {
@@ -200,11 +213,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     decoration: const InputDecoration(hintText: 'Weight'),
                   ),
                   SizedBox(height: 5),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.edit_calendar),
-                    label: Text(dateFormat.format(dateTime)),
-                    onPressed: () {},
-                  ),
+                  DateTimePicker(
+                    dateTime: selectedDateTime,
+                    onDateTimeChanged: (dateTime) {
+                      selectedDateTime = dateTime;
+                    },
+                  )
                 ],
               ),
             ),
@@ -225,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       // save information to local database
                       Weight newWeight = Weight.empty();
                       newWeight.weight = newWeightValue;
-                      newWeight.dateTime = DateTime.now();
+                      newWeight.dateTime = selectedDateTime;
 
                       await dbHelper.insertWeight(newWeight);
                       _weightTextFieldController.clear();
@@ -346,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ][_currentPageIndex],
-      floatingActionButton: _currentPageIndex != 1 // the use of _curerntPageIndex here in the ternary is to hide the button on the chart page.
+      floatingActionButton: _currentPageIndex != 1 // the use of _currentPageIndex here in the ternary is to hide the button on the chart page.
           ? FloatingActionButton(
               tooltip: 'Add',
               child: const Icon(Icons.add),
