@@ -45,7 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
   DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   final TextEditingController _weightTextFieldController = TextEditingController();
-  DateTime selectedDateTime = DateTime.now();
   DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
 
   Future<dynamic> _displayDeleteWeightDialog(BuildContext context, int weightId) async {
@@ -75,15 +74,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _displayEditWeightDialog(BuildContext context, Weight weight) async {
     TextEditingController weightEditTextController = TextEditingController(text: weight.weight.toString());
+    DateTime selectedDateTime = weight.dateTime;
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Edit weight'),
-            content: TextField(
-              controller: weightEditTextController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(hintText: 'Weight'),
+            content: IntrinsicHeight(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: weightEditTextController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Weight'),
+                  ),
+                  SizedBox(height: 5),
+                  DateTimePicker(
+                    dateTime: selectedDateTime,
+                    onDateTimeChanged: (newDateTime) {
+                      selectedDateTime = newDateTime;
+                    },
+                  )
+                ],
+              ),
             ),
             actions: [
               Row(
@@ -121,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Weight editedWeight = Weight.empty();
                           editedWeight.id = weight.id;
                           editedWeight.weight = editedWeightValue;
-                          editedWeight.dateTime = weight.dateTime;
+                          editedWeight.dateTime = selectedDateTime;
                           await dbHelper.updateWeight(editedWeight);
 
                           weightEditTextController.clear();
@@ -205,8 +218,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   SizedBox(height: 5),
                   DateTimePicker(
                     dateTime: selectedDateTime,
-                    onDateTimeChanged: (dateTime) {
-                      selectedDateTime = dateTime;
+                    onDateTimeChanged: (newDateTime) {
+                      selectedDateTime = newDateTime;
                     },
                   )
                 ],
