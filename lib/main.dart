@@ -186,16 +186,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<DateTime?> pickDateTime(DateTime dateTime) async {
-    DateTime? date = await showDatePicker(context: context, initialDate: dateTime, firstDate: DateTime(1900), lastDate: DateTime(2100));
-    // if no date is selected, return the passed in dateTime.
-    if (date == null) return dateTime;
-    TimeOfDay? time = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(dateTime));
-    // if no time is selected then just return the date picked and the time from the passed in dateTime.
-    if (time == null) return DateTime(date.year, date.month, date.day, dateTime.hour, dateTime.minute);
-    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
-  }
-
   Future<void> _displayAddWeightDialog(BuildContext context) async {
     DateTime selectedDateTime = DateTime.now();
 
