@@ -37,7 +37,7 @@ Future<dynamic> weightLineChart(List<Weight> weightList) async {
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 35,
+            reservedSize: 25,
             // dealing with how the date axis should be displayed.
             getTitlesWidget: (value, meta) {
               Widget text;

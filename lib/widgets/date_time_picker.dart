@@ -48,8 +48,6 @@ class _DateTimePickerState extends State<DateTimePicker> {
           if (newDateTime == null) return; // no new date time is selected.
           widget.dateTime = newDateTime; // set the new datetime so the widget updates.
         });
-
-        // Navigator.of(context).pop(newDateTime); // todo: dont use buildcontext across async gaps
       },
     );
   }
