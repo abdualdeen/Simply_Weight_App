@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weight_app/constants.dart';
 import 'package:weight_app/database_helpers.dart';
 import 'package:weight_app/weight_model.dart';
 import 'package:weight_app/widgets/line_chart.dart';
@@ -83,16 +84,21 @@ class _ChartsPageState extends State<ChartsPage> {
   // this was done this way because I cannot pass in the weightlist into the linechart with `await` as you cannot use that inside the futurebuilder.
   Future<dynamic> callLineChart(Calendar selectedCalendar) async {
     List<Weight> weightList = [];
+    double interval = 0;
     if (selectedCalendar == Calendar.week) {
-      weightList = await dbHelper.getLastWeekWeights();
+      weightList = calculateDailyAverageWeight(await dbHelper.getLastWeekWeights());
+      interval = Constants.DAY_IN_MILLISECONDS;
     } else if (selectedCalendar == Calendar.month) {
       weightList = prepareMonthlyWeights(await dbHelper.getLastMonthWeights());
+      interval = Constants.WEEK_IN_MILLISECONDS;
     } else if (selectedCalendar == Calendar.year) {
       weightList = await dbHelper.getLastYearWeights();
+      interval = Constants.MONTH_IN_MILLISECONDS;
     } else {
       weightList = await dbHelper.getAllWeights();
+      interval = Constants.MONTH_IN_MILLISECONDS;
     }
-    return weightLineChart(weightList);
+    return weightLineChart(weightList, interval);
   }
 
   @override
