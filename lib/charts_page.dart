@@ -68,6 +68,41 @@ List<Weight> prepareMonthlyWeights(List<Weight> weights) {
   return preparedWeights;
 }
 
+List<Weight> prepareYearlyWeights(List<Weight> weights) {
+  // "normalize" the weights so that there is one point per day.
+  List<Weight> normalizedWeights = calculateDailyAverageWeight(weights);
+
+  // treat it like displaying the week case.
+  if (normalizedWeights.length < 7) {
+    return normalizedWeights;
+  }
+
+  DateTime? startDate = normalizedWeights[0].dateTime;
+  int counter = 0;
+  double sum = 0;
+  List<Weight> preparedWeights = [];
+
+  for (int i = 0; i < normalizedWeights.length; i++) {
+    // check if startDate is null and if it is assign the current date in the loop.
+    startDate ??= normalizedWeights[i].dateTime;
+
+    sum += normalizedWeights[i].weight;
+    counter++;
+
+    // average and add the weight to the list if we've gone through 4 days or it's the end of the list.
+    if (i == preparedWeights.length - 1 || normalizedWeights[i].dateTime.difference(startDate).inDays >= 30) {
+      double averagedWeight = double.parse((sum / counter).toStringAsFixed(2));
+      preparedWeights.add(Weight(id: 0, weight: averagedWeight, dateTime: normalizedWeights[i].dateTime));
+      // reset counter for next averaging.
+      sum = 0;
+      counter = 0;
+      startDate = null;
+    }
+  }
+
+  return preparedWeights;
+}
+
 enum Calendar { week, month, year, all }
 
 class ChartsPage extends StatefulWidget {
@@ -92,11 +127,11 @@ class _ChartsPageState extends State<ChartsPage> {
       weightList = prepareMonthlyWeights(await dbHelper.getLastMonthWeights());
       interval = Constants.WEEK_IN_MILLISECONDS;
     } else if (selectedCalendar == Calendar.year) {
-      weightList = await dbHelper.getLastYearWeights();
+      weightList = prepareYearlyWeights(await dbHelper.getLastYearWeights());
       interval = Constants.MONTH_IN_MILLISECONDS;
     } else {
-      weightList = await dbHelper.getAllWeights();
-      interval = Constants.MONTH_IN_MILLISECONDS;
+      weightList = prepareYearlyWeights(await dbHelper.getAllWeights());
+      interval = Constants.THREE_MONTHS_IN_MILLISECONDS;
     }
     return weightLineChart(weightList, interval);
   }
