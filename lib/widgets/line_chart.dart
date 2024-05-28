@@ -6,20 +6,23 @@ import '../weight_model.dart';
 List<FlSpot> getWeightSpots(List<Weight> weightList) {
   // Create FlSpot instances from Weight objects
   List<FlSpot> spots = weightList.map((weight) {
-    print("${weight.dateTime.toString()}, ${weight.weight}");
     return FlSpot(weight.dateTime.millisecondsSinceEpoch.toDouble(), weight.weight);
   }).toList();
 
   return spots;
 }
 
-Future<dynamic> weightLineChart(List<Weight> weightList, double xAxisInterval) async {
+Future<dynamic> weightLineChart(List<Weight> weightList, double xAxisInterval, Map<String, double> limits) async {
   if (weightList.isEmpty) {
     return const Center(child: Text('No recorded data yet.'));
   }
   List<FlSpot> weightSpots = getWeightSpots(weightList);
   return LineChart(
     LineChartData(
+      maxY: limits['maxY'],
+      minY: limits['minY'],
+      maxX: limits['maxX'],
+      minX: limits['minX'],
       gridData: const FlGridData(show: false),
       borderData: FlBorderData(show: false),
       titlesData: FlTitlesData(
@@ -33,33 +36,52 @@ Future<dynamic> weightLineChart(List<Weight> weightList, double xAxisInterval) a
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 10,
+            interval: 5,
             reservedSize: 40,
             getTitlesWidget: (value, meta) {
-              Widget text = Text(value.toInt().toString());
-              return SideTitleWidget(axisSide: meta.axisSide, child: text);
+              Widget axisTitle = Text(value.toInt().toString());
+              // A workaround to hide the max value title as FLChart is overlapping it on top of previous
+              if (value == meta.max) {
+                final remainder = value % meta.appliedInterval;
+                if (remainder != 0.0 && remainder / meta.appliedInterval < 0.5) {
+                  axisTitle = const SizedBox.shrink();
+                }
+              }
+              return SideTitleWidget(axisSide: meta.axisSide, child: axisTitle);
             },
           ),
         ),
-        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: AxisTitles(
+            sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  return const Text('');
+                })),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             interval: xAxisInterval,
-            // reservedSize: 25,
             // dealing with how the date axis should be displayed.
             getTitlesWidget: (value, meta) {
-              Widget text;
+              Widget axisTitle;
               DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value.toInt());
               // Format DateTime to "MM/dd" string to display on chart
-              text = Text(
+              axisTitle = Text(
                 "${dateTime.month}/${dateTime.day}",
                 style: const TextStyle(fontSize: 12),
               );
+
+              // A workaround to hide the max value title as FLChart is overlapping it on top of previous
+              if (value == meta.max) {
+                final remainder = value % meta.appliedInterval;
+                if (remainder != 0.0 && remainder / meta.appliedInterval < 0.5) {
+                  axisTitle = const SizedBox.shrink();
+                }
+              }
               return SideTitleWidget(
                 axisSide: meta.axisSide,
-                child: text,
                 fitInside: const SideTitleFitInsideData(enabled: true, distanceFromEdge: 0, axisPosition: 0, parentAxisSize: 0),
+                child: axisTitle,
               );
             },
           ),
