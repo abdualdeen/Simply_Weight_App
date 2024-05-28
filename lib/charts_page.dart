@@ -28,7 +28,6 @@ List<Weight> calculateDailyAverageWeight(List<Weight> weights) {
     // id is set to zero as it's irrelevant for this use case.
     Weight averageWeight = Weight(id: 0, weight: average, dateTime: DateFormat('yyyy-MM-dd').parse(date));
     averages.add(averageWeight);
-    //print("${averageWeight.dateTime.toString()}, ${averageWeight.weight}"); // todo: remove
   });
   return averages;
 }

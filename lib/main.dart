@@ -369,7 +369,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.add),
               onPressed: () {
                 _displayAddWeightDialog(context);
-                // todo: clean
+                // todo: clean, the function below is used for testing to fill test data.
                 // dbHelper.fillDbForTesting();
               },
             )
