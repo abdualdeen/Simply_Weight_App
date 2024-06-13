@@ -102,21 +102,22 @@ List<Weight> prepareYearlyWeights(List<Weight> weights) {
   return preparedWeights;
 }
 
-Map<String, double> findLimits(List<Weight> weightList) {
-  double maxY = weightList.reduce((a, b) => a.weight > b.weight ? a : b).weight + 5.0;
-  double minY = weightList.reduce((a, b) => a.weight < b.weight ? a : b).weight - 5.0;
-  double maxX = weightList
+Map<String, int> findLimits(List<Weight> weightList) {
+  int maxY = (weightList.reduce((a, b) => a.weight > b.weight ? a : b).weight + 5.0).toInt();
+  int minY = (weightList.reduce((a, b) => a.weight < b.weight ? a : b).weight - 5.0).toInt();
+  int maxX = weightList
       .reduce((a, b) => a.dateTime.millisecondsSinceEpoch.toDouble() > b.dateTime.millisecondsSinceEpoch.toDouble() ? a : b)
       .dateTime
       .millisecondsSinceEpoch
-      .toDouble();
-  double minX = weightList
+      .toInt();
+  int minX = weightList
       .reduce((a, b) => a.dateTime.millisecondsSinceEpoch.toDouble() < b.dateTime.millisecondsSinceEpoch.toDouble() ? a : b)
       .dateTime
       .millisecondsSinceEpoch
-      .toDouble();
+      .toDouble()
+      .toInt();
 
-  return <String, double>{'maxY': maxY, 'minY': minY, 'maxX': maxX, 'minX': minX};
+  return <String, int>{'maxY': maxY, 'minY': minY, 'maxX': maxX, 'minX': minX};
 }
 
 enum Calendar { week, month, year, all }
@@ -136,12 +137,13 @@ class _ChartsPageState extends State<ChartsPage> {
   Future<dynamic> callLineChart(Calendar selectedCalendar) async {
     List<Weight> weightList = [];
     double interval = 0;
-    Map<String, double> limits = {'maxY': 0, 'minY': 0, 'maxX': 0, 'minX': 0};
+    Map<String, int> limits = {'maxY': 0, 'minY': 0, 'maxX': 0, 'minX': 0};
     if (selectedCalendar == Calendar.week) {
       List<Weight> weightData = await dbHelper.getLastWeekWeights();
       weightList = calculateDailyAverageWeight(weightData);
       interval = Constants.DAY_IN_MILLISECONDS;
       limits = findLimits(weightList);
+      print(limits);
     } else if (selectedCalendar == Calendar.month) {
       List<Weight> weightData = await dbHelper.getLastMonthWeights();
       weightList = prepareMonthlyWeights(weightData);

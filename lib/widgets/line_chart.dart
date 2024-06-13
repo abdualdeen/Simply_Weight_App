@@ -12,17 +12,17 @@ List<FlSpot> getWeightSpots(List<Weight> weightList) {
   return spots;
 }
 
-Future<dynamic> weightLineChart(List<Weight> weightList, double xAxisInterval, Map<String, double> limits) async {
+Future<dynamic> weightLineChart(List<Weight> weightList, double xAxisInterval, Map<String, int> limits) async {
   if (weightList.isEmpty) {
     return const Center(child: Text('No recorded data yet.'));
   }
   List<FlSpot> weightSpots = getWeightSpots(weightList);
   return LineChart(
     LineChartData(
-      maxY: limits['maxY'],
-      minY: limits['minY'],
-      maxX: limits['maxX'],
-      minX: limits['minX'],
+      maxY: limits['maxY']?.toDouble(),
+      minY: limits['minY']?.toDouble(),
+      maxX: limits['maxX']?.toDouble(),
+      minX: limits['minX']?.toDouble(),
       gridData: const FlGridData(show: false),
       borderData: FlBorderData(show: false),
       titlesData: FlTitlesData(
