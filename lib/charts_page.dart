@@ -103,6 +103,9 @@ List<Weight> prepareYearlyWeights(List<Weight> weights) {
 }
 
 Map<String, int> findLimits(List<Weight> weightList) {
+  if (weightList.isEmpty) {
+    return <String, int>{'maxY': 0, 'minY': 0, 'maxX': 0, 'minX': 0};
+  }
   int maxY = (weightList.reduce((a, b) => a.weight > b.weight ? a : b).weight + 5.0).toInt();
   int minY = (weightList.reduce((a, b) => a.weight < b.weight ? a : b).weight - 5.0).toInt();
   int maxX = weightList
@@ -143,7 +146,6 @@ class _ChartsPageState extends State<ChartsPage> {
       weightList = calculateDailyAverageWeight(weightData);
       interval = Constants.DAY_IN_MILLISECONDS;
       limits = findLimits(weightList);
-      print(limits);
     } else if (selectedCalendar == Calendar.month) {
       List<Weight> weightData = await dbHelper.getLastMonthWeights();
       weightList = prepareMonthlyWeights(weightData);
