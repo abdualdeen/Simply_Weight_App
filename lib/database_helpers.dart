@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
+import 'package:simply_weight/testing_data.dart';
+import 'package:simply_weight/weight_model.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:weight_app/testing_data.dart';
-import 'package:weight_app/weight_model.dart';
 
 class DatabaseHelper {
   Future<Database> initializeDB() async {

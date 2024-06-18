@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:weight_app/weight_model.dart';
+import 'package:simply_weight/weight_model.dart';
 
 List<Weight> generateTestData() {
   DateTime nowDateTime = DateTime.now();

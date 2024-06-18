@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weight_app/constants.dart';
+import 'package:simply_weight/constants.dart';
 
 class DateTimePicker extends StatefulWidget {
   final Function(DateTime)? onDateTimeChanged;

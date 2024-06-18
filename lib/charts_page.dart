@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weight_app/constants.dart';
-import 'package:weight_app/database_helpers.dart';
-import 'package:weight_app/weight_model.dart';
-import 'package:weight_app/widgets/line_chart.dart';
+import 'package:simply_weight/constants.dart';
+import 'package:simply_weight/database_helpers.dart';
+import 'package:simply_weight/weight_model.dart';
+import 'package:simply_weight/widgets/line_chart.dart';
 
 // the purpose of this function is to make it so that there is an average weight for days where there is multiple entries.
 List<Weight> calculateDailyAverageWeight(List<Weight> weights) {

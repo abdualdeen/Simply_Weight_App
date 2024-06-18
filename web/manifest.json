@@ -1,6 +1,6 @@
 {
-    "name": "weight_app",
-    "short_name": "weight_app",
+    "name": "simply_weight",
+    "short_name": "simply_weight",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

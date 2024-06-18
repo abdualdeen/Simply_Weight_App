@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weight_app/charts_page.dart';
-import 'package:weight_app/constants.dart';
-import 'package:weight_app/database_helpers.dart';
-import 'package:weight_app/logging.dart';
-import 'package:weight_app/themes.dart';
-import 'package:weight_app/weight_model.dart';
-import 'package:weight_app/widgets/date_time_picker.dart';
-import 'package:weight_app/widgets/dialogs.dart';
+import 'package:simply_weight/charts_page.dart';
+import 'package:simply_weight/constants.dart';
+import 'package:simply_weight/database_helpers.dart';
+import 'package:simply_weight/logging.dart';
+import 'package:simply_weight/themes.dart';
+import 'package:simply_weight/weight_model.dart';
+import 'package:simply_weight/widgets/date_time_picker.dart';
+import 'package:simply_weight/widgets/dialogs.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,10 +20,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Simple Weight Tracking',
+      title: 'Simply Weight',
       theme: lightTheme,
       darkTheme: darkTheme,
-      home: const MyHomePage(title: 'Simple Weight Tracking'),
+      home: const MyHomePage(title: 'Simply Weight'),
     );
   }
 }

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "weight_app" "\0"
+            VALUE "CompanyName", "com.aldeen" "\0"
+            VALUE "FileDescription", "simply_weight" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "weight_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "weight_app.exe" "\0"
-            VALUE "ProductName", "weight_app" "\0"
+            VALUE "InternalName", "simply_weight" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 com.aldeen. All rights reserved." "\0"
+            VALUE "OriginalFilename", "simply_weight.exe" "\0"
+            VALUE "ProductName", "simply_weight" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
