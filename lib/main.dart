@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simply_weight/charts_page.dart';
@@ -10,6 +11,13 @@ import 'package:simply_weight/widgets/date_time_picker.dart';
 import 'package:simply_weight/widgets/dialogs.dart';
 
 void main() {
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(channelKey: 'weight_channel', channelName: 'Simply Weight', channelDescription: 'Weight Notifications'),
+    ],
+    debug: true,
+  );
   runApp(const MyApp());
 }
 
@@ -38,6 +46,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+    super.initState();
+  }
+
   final appLog = appLogger;
   bool deleteWeight = false;
   int _currentPageIndex = 0;
