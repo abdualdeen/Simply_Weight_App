@@ -319,7 +319,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
         actions: [
           PopupMenuButton(
@@ -384,6 +383,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: _currentPageIndex != 1 // the use of _currentPageIndex here in the ternary is to hide the button on the chart page.
           ? FloatingActionButton(
               tooltip: 'Add',
+              backgroundColor: Colors.green[900],
               child: const Icon(Icons.add),
               onPressed: () {
                 _displayAddWeightDialog(context);

@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 
 ThemeData lightTheme = ThemeData(
-  appBarTheme: const AppBarTheme(
-    color: Colors.green,
-    iconTheme: IconThemeData(color: Colors.black),
+  appBarTheme: AppBarTheme(
+    color: Colors.green[900]!,
+    iconTheme: const IconThemeData(color: Colors.black),
   ),
   colorScheme: ColorScheme.fromSeed(
-    seedColor: Colors.green,
+    seedColor: Colors.green[900]!,
     brightness: Brightness.light,
   ),
+  useMaterial3: true,
 );
 
 ThemeData darkTheme = ThemeData(
-  appBarTheme: const AppBarTheme(
-    color: Colors.green,
-    iconTheme: IconThemeData(color: Colors.white),
+  appBarTheme: AppBarTheme(
+    color: Colors.green[900]!,
+    iconTheme: const IconThemeData(color: Colors.white),
   ),
   colorScheme: ColorScheme.fromSeed(
-    seedColor: Colors.green,
+    seedColor: Colors.green[900]!,
     brightness: Brightness.dark,
   ),
+  useMaterial3: true,
 );
