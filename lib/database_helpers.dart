@@ -1,8 +1,7 @@
-import 'package:intl/intl.dart';
 import 'package:path/path.dart';
+import 'package:simply_weight/testing_data.dart';
+import 'package:simply_weight/weight_model.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:weight_app/testing_data.dart';
-import 'package:weight_app/weight_model.dart';
 
 class DatabaseHelper {
   Future<Database> initializeDB() async {
@@ -40,38 +39,6 @@ class DatabaseHelper {
   Future<void> createTable() async {
     final Database db = await initializeDB();
     db.execute("CREATE TABLE weights (id INTEGER PRIMARY KEY AUTOINCREMENT, weight DOUBLE NOT NULL, dateTime DATETIME NOT NULL)");
-  }
-
-  // the purpose of this function is to make it so that there is an average weight for days where there is multiple entries.
-  // todo: this function only deals with the 7 days issue. need to sum and avg weight differently for different periods.
-  // todo: this should probably be in a different file, but i'll leave it here for now.
-  List<Weight> calculateWeightAverages(List<Weight> weights) {
-    Map<String, List<double>> weightMap = {};
-
-    // group weigths with similar date together.
-    for (Weight weight in weights) {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(weight.dateTime);
-      // Check if the date exists in the map
-      if (weightMap.containsKey(formattedDate)) {
-        // If yes, add the weight to the existing list
-        weightMap[formattedDate]!.add(weight.weight);
-      } else {
-        // If no, create a new list with the weight
-        weightMap[formattedDate] = [weight.weight];
-      }
-    }
-
-    // Calculate the average weight for each date.
-    List<Weight> averages = [];
-    weightMap.forEach((date, weights) {
-      double average = weights.reduce((value, element) => value + element) / weights.length;
-      // id is set to zero as it's irrevelant for this use case.
-      Weight averageWeight = Weight(id: 0, weight: average, dateTime: DateFormat('yyyy-MM-dd').parse(date));
-      averages.add(averageWeight);
-      //print("${averageWeight.dateTime.toString()}, ${averageWeight.weight}"); // todo: remove
-    });
-
-    return averages;
   }
 
   Future<List<Weight>> getLastWeekWeights() async {

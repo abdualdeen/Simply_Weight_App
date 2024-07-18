@@ -1,14 +1,23 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weight_app/charts_page.dart';
-import 'package:weight_app/constants.dart';
-import 'package:weight_app/database_helpers.dart';
-import 'package:weight_app/logging.dart';
-import 'package:weight_app/themes.dart';
-import 'package:weight_app/weight_model.dart';
-import 'package:weight_app/widgets/dialogs.dart';
+import 'package:simply_weight/charts_page.dart';
+import 'package:simply_weight/constants.dart';
+import 'package:simply_weight/database_helpers.dart';
+import 'package:simply_weight/logging.dart';
+import 'package:simply_weight/themes.dart';
+import 'package:simply_weight/weight_model.dart';
+import 'package:simply_weight/widgets/date_time_picker.dart';
+import 'package:simply_weight/widgets/dialogs.dart';
 
 void main() {
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(channelKey: 'weight_channel', channelName: 'Simply Weight', channelDescription: 'Weight Notifications'),
+    ],
+    debug: true,
+  );
   runApp(const MyApp());
 }
 
@@ -19,10 +28,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Simple Weight Tracking',
+      title: 'Simply Weight',
       theme: lightTheme,
       darkTheme: darkTheme,
-      home: const MyHomePage(title: 'Simple Weight Tracking'),
+      home: const MyHomePage(title: 'Simply Weight'),
     );
   }
 }
@@ -37,6 +46,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+    super.initState();
+  }
+
   final appLog = appLogger;
   bool deleteWeight = false;
   int _currentPageIndex = 0;
@@ -44,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DatabaseHelper dbHelper = DatabaseHelper();
   NavigationDestinationLabelBehavior labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
   final TextEditingController _weightTextFieldController = TextEditingController();
+  DateFormat dateFormat = DateFormat(Constants.DATE_TIME_FORMAT);
 
   Future<dynamic> _displayDeleteWeightDialog(BuildContext context, int weightId) async {
     return showDialog(
@@ -72,15 +92,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _displayEditWeightDialog(BuildContext context, Weight weight) async {
     TextEditingController weightEditTextController = TextEditingController(text: weight.weight.toString());
+    DateTime selectedDateTime = weight.dateTime;
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Edit weight'),
-            content: TextField(
-              controller: weightEditTextController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(hintText: 'Weight'),
+            content: IntrinsicHeight(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: weightEditTextController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Weight'),
+                  ),
+                  SizedBox(height: 5),
+                  DateTimePicker(
+                    dateTime: selectedDateTime,
+                    onDateTimeChanged: (newDateTime) {
+                      selectedDateTime = newDateTime;
+                    },
+                  )
+                ],
+              ),
             ),
             actions: [
               Row(
@@ -118,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Weight editedWeight = Weight.empty();
                           editedWeight.id = weight.id;
                           editedWeight.weight = editedWeightValue;
-                          editedWeight.dateTime = weight.dateTime;
+                          editedWeight.dateTime = selectedDateTime;
                           await dbHelper.updateWeight(editedWeight);
 
                           weightEditTextController.clear();
@@ -184,15 +218,30 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _displayAddWeightDialog(BuildContext context) async {
+    DateTime selectedDateTime = DateTime.now();
+
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Add weight'),
-            content: TextField(
-              controller: _weightTextFieldController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(hintText: 'Weight'),
+            content: IntrinsicHeight(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _weightTextFieldController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Weight'),
+                  ),
+                  SizedBox(height: 5),
+                  DateTimePicker(
+                    dateTime: selectedDateTime,
+                    onDateTimeChanged: (newDateTime) {
+                      selectedDateTime = newDateTime;
+                    },
+                  )
+                ],
+              ),
             ),
             actions: [
               MaterialButton(
@@ -211,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       // save information to local database
                       Weight newWeight = Weight.empty();
                       newWeight.weight = newWeightValue;
-                      newWeight.dateTime = DateTime.now();
+                      newWeight.dateTime = selectedDateTime;
 
                       await dbHelper.insertWeight(newWeight);
                       _weightTextFieldController.clear();
@@ -270,7 +319,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
         actions: [
           PopupMenuButton(
@@ -332,14 +380,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ][_currentPageIndex],
-      floatingActionButton: _currentPageIndex != 1 // the use of _curerntPageIndex here in the ternary is to hide the button on the chart page.
+      floatingActionButton: _currentPageIndex != 1 // the use of _currentPageIndex here in the ternary is to hide the button on the chart page.
           ? FloatingActionButton(
               tooltip: 'Add',
+              backgroundColor: Colors.green[900],
               child: const Icon(Icons.add),
               onPressed: () {
                 _displayAddWeightDialog(context);
-                // todo: clean
-                dbHelper.fillDbForTesting();
+                // todo: clean, the function below is used for testing to fill test data.
+                // dbHelper.fillDbForTesting();
               },
             )
           : null,
