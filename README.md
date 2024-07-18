@@ -13,6 +13,9 @@ flutter build apk --split-per-abi
 flutter pub get
 ```
 
-### MISC.
+## Screenshots
+https://abdullahaldeen.dev/projects/weightapp
+
+## MISC.
 Main app color (RGB): 76 175 80
 secondary for app icon gradient (RGB): 54 143 59
