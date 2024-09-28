@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Simply Weight',
-      theme: lightTheme,
+      theme: lightTheme, // todo: fix light theme text and green color being too dark.
       darkTheme: darkTheme,
       home: const MyHomePage(title: 'Simply Weight'),
     );
@@ -203,16 +203,36 @@ class _MyHomePageState extends State<MyHomePage> {
       return const Center(child: Text("No recorded data yet. \nTo start, click the '+' Button below to add your weight!"));
     }
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text(
-          'Your last recorded weigth is',
-          style: Theme.of(context).textTheme.headlineSmall, // todo: check buildcontext async gaps issue
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Your last recorded weigth is',
+              style: Theme.of(context).textTheme.headlineSmall, // todo: check buildcontext async gaps issue
+            ),
+            Text(
+              lastWeight.first.weight.toString(),
+              style: Theme.of(context).textTheme.headlineMedium, // todo: check buildcontext async gaps issue
+            )
+          ],
         ),
-        Text(
-          lastWeight.first.weight.toString(),
-          style: Theme.of(context).textTheme.headlineMedium, // todo: check buildcontext async gaps issue
-        )
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton.icon(
+              icon: const Icon(Icons.notifications_none),
+              onPressed: () {},
+              label: const Text('Set Reminder'),
+            ),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.sports_score),
+              onPressed: () {},
+              label: const Text('Set Goal'),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -383,7 +403,6 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: _currentPageIndex != 1 // the use of _currentPageIndex here in the ternary is to hide the button on the chart page.
           ? FloatingActionButton(
               tooltip: 'Add',
-              backgroundColor: Colors.green[900],
               child: const Icon(Icons.add),
               onPressed: () {
                 _displayAddWeightDialog(context);
