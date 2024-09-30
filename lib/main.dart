@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simply_weight/charts_page.dart';
 import 'package:simply_weight/constants.dart';
 import 'package:simply_weight/database_helpers.dart';
@@ -167,6 +168,39 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  Future<dynamic> _readSavedPreference(String key) async {
+    final preferences = await SharedPreferences.getInstance();
+    final bool value = preferences.getBool(key) ?? false;
+    print(value);
+    return value;
+  }
+
+  Future<void> _savePreference(String key, bool value) async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setBool(key, value);
+  }
+
+  Future<void> displayReminderPopup(BuildContext context, bool remindersSwicthValue) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            children: [
+              SwitchListTile(
+                title: const Text('Reminders'),
+                value: remindersSwicthValue,
+                onChanged: (value) {
+                  print(value);
+                  setState(() {
+                    remindersSwicthValue = value;
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   Future<dynamic> getHistoryPage() async {
     List<Weight> allWeights = await dbHelper.getAllWeights();
     if (allWeights.isEmpty) {
@@ -199,6 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<dynamic> getHomePage() async {
     List<Weight> lastWeight = await dbHelper.getLastWeight();
+    bool remindersSwicthValue = false;
     if (lastWeight.isEmpty) {
       return const Center(child: Text("No recorded data yet. \nTo start, click the '+' Button below to add your weight!"));
     }
@@ -223,7 +258,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             ElevatedButton.icon(
               icon: const Icon(Icons.notifications_none),
-              onPressed: () {},
+              onPressed: () {
+                displayReminderPopup(context, remindersSwicthValue);
+              },
               label: const Text('Set Reminder'),
             ),
             ElevatedButton.icon(
