@@ -180,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await preferences.setBool(key, value);
   }
 
-  Future<void> displayReminderPopup(BuildContext context, bool remindersSwicthValue) {
+  Future<void> displayReminderPopup(BuildContext context, bool remindersSwitchValue) {
     return showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -188,11 +188,11 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               SwitchListTile(
                 title: const Text('Reminders'),
-                value: remindersSwicthValue,
+                value: remindersSwitchValue,
                 onChanged: (value) {
                   print(value);
                   setState(() {
-                    remindersSwicthValue = value;
+                    remindersSwitchValue = value;
                   });
                 },
               ),
