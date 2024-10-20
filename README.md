@@ -1,5 +1,5 @@
-# Simple Weight Tracking
-A simple app that tracks your weight.
+# Minimalist Weight Tracking
+A minimalist app that tracks your weight.
 
 
 
