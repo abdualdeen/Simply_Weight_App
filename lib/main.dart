@@ -1,15 +1,16 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simply_weight/charts_page.dart';
 import 'package:simply_weight/constants.dart';
 import 'package:simply_weight/database_helpers.dart';
 import 'package:simply_weight/logging.dart';
+import 'package:simply_weight/preferences.dart';
 import 'package:simply_weight/themes.dart';
 import 'package:simply_weight/weight_model.dart';
 import 'package:simply_weight/widgets/date_time_picker.dart';
 import 'package:simply_weight/widgets/dialogs.dart';
+import 'package:simply_weight/widgets/reminders_modal.dart';
 
 void main() {
   AwesomeNotifications().initialize(
@@ -57,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  // "global" variables
   final appLog = appLogger;
   bool deleteWeight = false;
   int _currentPageIndex = 0;
@@ -168,36 +170,12 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  Future<dynamic> _readSavedPreference(String key) async {
-    final preferences = await SharedPreferences.getInstance();
-    final bool value = preferences.getBool(key) ?? false;
-    print(value);
-    return value;
-  }
-
-  Future<void> _savePreference(String key, bool value) async {
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(key, value);
-  }
-
-  Future<void> displayReminderPopup(BuildContext context, bool remindersSwitchValue) {
+  Future<dynamic> displayReminderPopup(BuildContext context) async {
+    bool reminderSwitchValue = await readSavedPreference(Constants.REMINDERS_STATE);
     return showModalBottomSheet(
         context: context,
-        builder: (context) {
-          return Column(
-            children: [
-              SwitchListTile(
-                title: const Text('Reminders'),
-                value: remindersSwitchValue,
-                onChanged: (value) {
-                  print(value);
-                  setState(() {
-                    remindersSwitchValue = value;
-                  });
-                },
-              ),
-            ],
-          );
+        builder: (BuildContext context) {
+          return RemindersModal(reminderSwitchValue: reminderSwitchValue);
         });
   }
 
@@ -233,7 +211,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<dynamic> getHomePage() async {
     List<Weight> lastWeight = await dbHelper.getLastWeight();
-    bool remindersSwicthValue = false;
     if (lastWeight.isEmpty) {
       return const Center(child: Text("No recorded data yet. \nTo start, click the '+' Button below to add your weight!"));
     }
@@ -259,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton.icon(
               icon: const Icon(Icons.notifications_none),
               onPressed: () {
-                displayReminderPopup(context, remindersSwicthValue);
+                displayReminderPopup(context);
               },
               label: const Text('Set Reminder'),
             ),

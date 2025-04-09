@@ -1,8 +1,6 @@
 # Simple Weight Tracking
 A simple app that tracks your weight.
 
-
-
 ## Build APK
 ```
 flutter build apk --split-per-abi
