@@ -7,4 +7,6 @@ class Constants {
   static const double THREE_MONTHS_IN_MILLISECONDS = 7257600000;
   // saved preferences
   static const String REMINDERS_STATE = 'REMINDERS_STATE';
+  // other
+  static const String SOURCE_URL = 'https://github.com/abdualdeen/Simply_Weight_App';
 }

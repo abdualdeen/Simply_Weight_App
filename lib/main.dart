@@ -308,24 +308,6 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  Future<void> _displayAboutDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('About'),
-            content: const Text('Made by Abdullah Aldeen'),
-            actions: [
-              MaterialButton(
-                  child: const Text('Ok'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -363,7 +345,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             onSelected: (value) {
               if (value == 0) {
-                _displayAboutDialog(context);
+                displayAboutDialog(context);
               }
             },
           ),
