@@ -47,7 +47,7 @@ Future<void> displayAboutDialog(BuildContext context) async {
                 ),
                 ListTile(
                   title: const Text('Version'),
-                  subtitle: const Text('0.8.0'),
+                  subtitle: const Text('0.5.0'),
                 ),
                 ListTile(
                   title: const Text('Author'),
