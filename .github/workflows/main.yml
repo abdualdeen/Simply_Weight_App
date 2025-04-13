@@ -53,7 +53,7 @@ jobs:
       - name: Debug Keystore 2.0
         run: |
           ls -la android/app/upload-keystore.jks
-          keytool -list -v -keystore android/app/upload-keystore.jks -storepass ${{ secrets.KEYSTORE_PASSWORD }}
+          keytool -list -v -keystore android/app/upload-keystore.jks -storepass '${{ secrets.KEYSTORE_PASSWORD }}'
       # build
       - name: Build APK
         run: flutter build apk --release
