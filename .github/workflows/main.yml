@@ -52,7 +52,7 @@ jobs:
           echo "storeFile=upload-keystore.jks" >> android/key.properties
       - name: Debug Keystore 2.0
         run: |
-          ls -la android/app/keystore.jks
+          ls -la android/app/upload-keystore.jks
           keytool -list -v -keystore KEYSTORE_FILE_PATH -storepass ${{ secrets.KEYSTORE_PASSWORD }}
       # build
       - name: Build APK
