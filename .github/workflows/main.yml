@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build & Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create releases/tags
     steps:
       # check out repo
       - name: Checkout Repository
