@@ -34,26 +34,12 @@ jobs:
       - name: Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
-      # for debugging
-      - name: Check keystore file path
-        run: |
-          readlink -f android/app/upload-keystore.jks
-          if [ -f android/app/upload-keystore.jks ]; then
-            echo "KEYSTORE_FILE_EXISTS=true" >> $GITHUB_ENV
-            echo "KEYSTORE_FILE_PATH=${{ secrets.KEYSTORE_FILE_PATH }}" >> $GITHUB_ENV
-          else
-            echo "KEYSTORE_FILE_EXISTS=false" >> $GITHUB_ENV
-          fi
       - name: Create key.properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=upload-keystore.jks" >> android/key.properties
-      - name: Debug Keystore 2.0
-        run: |
-          ls -la android/app/upload-keystore.jks
-          keytool -list -v -keystore android/app/upload-keystore.jks -storepass '${{ secrets.KEYSTORE_PASSWORD }}'
       # build
       - name: Build APK
         run: flutter build apk --release
