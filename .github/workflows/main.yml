@@ -1,5 +1,11 @@
 name: "Build & Release"
 on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
   pull_request:
     branches:
       - master
@@ -58,7 +64,14 @@ jobs:
         id: extract_version
         run: |
           version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+          
+         # Add 'dev' suffix if pushing to develop branch
+          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            version="${version}dev"
+          fi
+          
           echo "VERSION=$version" >> $GITHUB_ENV
+          echo "version is: $version"
       # github tagging
       - name: Check if Tag Exists
         id: check_tag
