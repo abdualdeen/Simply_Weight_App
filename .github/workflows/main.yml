@@ -59,7 +59,7 @@ jobs:
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             VERSION="${{ github.event.inputs.release_version }}"
           else
-            VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+            VERSION=$(grep '^version: ' pubspec.yaml \| cut -d ' ' -f 2 \| tr -d '\r')
           fi
           
           # Add 'dev' suffix for develop branch
@@ -91,7 +91,7 @@ jobs:
           fi
           
           echo "VERSION=$version" >> $GITHUB_ENV
-          echo "version is: $version"
+          echo "version is: ${{ env.VERSION }}"
       # github tagging
       - name: Check if Tag Exists
         id: check_tag
