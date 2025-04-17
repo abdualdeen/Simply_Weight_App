@@ -51,21 +51,41 @@ jobs:
       # build
       - name: Build APK
         run: flutter build apk --release
+      # handle apk filename for release
+      - name: Set APK Filename
+        id: set-apk-filename
+        run: |
+        # Extract version from pubspec (or use workflow_dispatch input)
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.release_version }}"
+          else
+            VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+          fi
+          
+          # Add 'dev' suffix for develop branch
+          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            VERSION="${VERSION}dev"
+          fi
+          
+          APK_NAME="simply-weight-v${VERSION}.apk"
+          echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
+          echo "APK_PATH=build/app/outputs/flutter-apk/${APK_NAME}" >> $GITHUB_ENV
+          echo "Using APK name: ${APK_NAME}"
+
       # upload artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Releases
           path: |
-            build/app/outputs/flutter-apk/app-release.apk
+            ${{ env.APK_PATH }}
             build/app/outputs/bundle/release/app-release.aab
       # versioning
       - name: Extract version from pubspec.yaml
         id: extract_version
         run: |
           version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
-          
-         # Add 'dev' suffix if pushing to develop branch
+      # Add 'dev' suffix if pushing to develop branch
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
             version="${version}dev"
           fi
@@ -91,5 +111,5 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/flutter-apk/app-release.apk"
+          artifacts: ${{ env.APK_PATH }}
           tag: v${{ env.VERSION }}

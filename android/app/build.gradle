@@ -75,6 +75,16 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def versionName = variant.versionName
+            def versionCode = variant.versionCode
+            def formattedDate = new Date().format('yyyyMMdd')
+            output.outputFileName = "simply-weight-v${versionName}.apk"
+        }
+    }
+
 }
 
 flutter {
