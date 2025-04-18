@@ -96,7 +96,7 @@ jobs:
           fi
           
           echo "VERSION=$version" >> $GITHUB_ENV
-          echo "version is: $version"
+          echo "version is: ${{'$version'}}"
       # github tagging
       - name: Check if Tag Exists
         id: check_tag
