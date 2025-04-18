@@ -90,13 +90,13 @@ jobs:
         id: extract_version
         run: |
           version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
-      # Add 'dev' suffix if pushing to develop branch
+      
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
             version="${version}dev"
           fi
           
           echo "VERSION=$version" >> $GITHUB_ENV
-          echo "version is: ${{'$version'}}"
+          echo "version is: $version"
       # github tagging
       - name: Check if Tag Exists
         id: check_tag
