@@ -68,9 +68,9 @@ jobs:
           fi
           
           # Add 'dev' suffix for develop branch
-          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-            VERSION="${VERSION}dev"
-          fi
+          #if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+          #  VERSION="${VERSION}dev"
+          #fi
           
           APK_NAME="simply-weight-v${VERSION}.apk"
           echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
