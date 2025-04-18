@@ -24,6 +24,7 @@ jobs:
       # check out repo
       - name: Checkout Repository
         uses: actions/checkout@v4
+
       # setup dependencies
       - name: Set Up Java
         uses: actions/setup-java@v4
@@ -35,9 +36,11 @@ jobs:
         with:
           flutter-version: '3.29.2'
           channel: 'stable'
+
       # install flutter dependencies
       - name: Install Dependencies
         run: flutter pub get
+
       # prepare to build
       - name: Decode Keystore
         run: |
@@ -48,18 +51,20 @@ jobs:
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=upload-keystore.jks" >> android/key.properties
+
       # build
       - name: Build APK
         run: flutter build apk --release
+
       # handle apk filename for release
       - name: Set APK Filename
         id: set-apk-filename
         run: |
-        # Extract version from pubspec (or use workflow_dispatch input)
+          # Extract version from pubspec (or use workflow_dispatch input)
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             VERSION="${{ github.event.inputs.release_version }}"
           else
-            VERSION=$(grep '^version: ' pubspec.yaml \| cut -d ' ' -f 2 \| tr -d '\r')
+            VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
           fi
           
           # Add 'dev' suffix for develop branch
@@ -91,7 +96,7 @@ jobs:
           fi
           
           echo "VERSION=$version" >> $GITHUB_ENV
-          echo "version is: ${{ env.VERSION }}"
+          echo "version is: $version"
       # github tagging
       - name: Check if Tag Exists
         id: check_tag
